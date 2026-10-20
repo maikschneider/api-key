@@ -13,9 +13,25 @@ final class KeyHasherTest extends UnitTestCase
 {
     private const KEY = 't3key_aGVsbG8td29ybGQtdGhpcy1pcy1hLXRlc3Qta2V5';
 
+    private bool $hadEncryptionKey = false;
+
+    private mixed $originalEncryptionKey = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->hadEncryptionKey = is_array($GLOBALS['TYPO3_CONF_VARS']['SYS'] ?? null)
+            && array_key_exists('encryptionKey', $GLOBALS['TYPO3_CONF_VARS']['SYS']);
+        $this->originalEncryptionKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? null;
+    }
+
     protected function tearDown(): void
     {
-        unset($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+        if ($this->hadEncryptionKey) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $this->originalEncryptionKey;
+        } else {
+            unset($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+        }
         parent::tearDown();
     }
 
