@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'directories' => [
+        '.build',
+        '.claude',
+        '.codegraph',
+        '.ddev',
+        '.git',
+        '.github',
+        '.idea',
+        'bin',
+        'build',
+        'config',
+        'Documentation-GENERATED-temp',
+        'Plans',
+        'public',
+        'tailor-version-upload',
+        'Tests',
+        'var',
+        'vendor',
+    ],
+    'files' => [
+        'DS_Store',
+        'CLAUDE.md',
+        'codecov.yml',
+        'CONTRIBUTING.md',
+        'editorconfig',
+        'gitattributes',
+        'gitignore',
+        'packaging_exclude.php',
+        'php-cs-fixer.php',
+        'phpstan.neon',
+        'phpstan-baseline.neon',
+        'phpunit.xml',
+        'SECURITY.md',
+    ],
+];

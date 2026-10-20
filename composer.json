@@ -1,0 +1,108 @@
+{
+	"name": "maikschneider/api-key",
+	"description": "Stateless API key authentication for TYPO3 — lets scripts, cron jobs, CI pipelines and server-to-server integrations call protected endpoints.",
+	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
+	"keywords": [
+		"typo3",
+		"typo3-cms-extension",
+		"api",
+		"api-key",
+		"authentication",
+		"psr-15"
+	],
+	"authors": [
+		{
+			"name": "Maik Schneider",
+			"email": "schneider.maik@me.com",
+			"role": "Developer"
+		}
+	],
+	"homepage": "https://extensions.typo3.org/extension/api_key",
+	"support": {
+		"issues": "https://github.com/maikschneider/api-key/issues",
+		"source": "https://github.com/maikschneider/api-key",
+		"docs": "https://docs.typo3.org/p/maikschneider/api-key/main/en-us/"
+	},
+	"require": {
+		"php": "^8.2",
+		"typo3/cms-core": "^13.4 || ^14.3",
+		"typo3/cms-frontend": "^13.4 || ^14.3"
+	},
+	"require-dev": {
+		"armin/editorconfig-cli": "^2.1",
+		"ergebnis/composer-normalize": "^2.45",
+		"friendsofphp/php-cs-fixer": "^3.12",
+		"move-elevator/composer-translation-validator": "^1.3",
+		"phpstan/extension-installer": "^1.3",
+		"saschaegerer/phpstan-typo3": "^3.0",
+		"symfony/translation": "^7.2",
+		"typo3/cms-install": "^13.4 || ^14.3",
+		"typo3/testing-framework": "^9.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"MaikSchneider\\ApiKey\\": "Classes"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"MaikSchneider\\ApiKey\\Tests\\": "Tests"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"ergebnis/composer-normalize": true,
+			"move-elevator/composer-translation-validator": true,
+			"phpstan/extension-installer": true,
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		},
+		"lock": false,
+		"vendor-dir": "vendor"
+	},
+	"extra": {
+		"typo3/cms": {
+			"Package": {
+				"providesPackages": {}
+			},
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"extension-key": "api_key",
+			"web-dir": "public"
+		}
+	},
+	"scripts": {
+		"ci:composer:normalize": "@composer normalize --no-check-lock --dry-run",
+		"ci:editorconfig:lint": "ec --strict --git-only -n",
+		"ci:language:lint": "composer validate-translations Resources/Private/Language",
+		"ci:php:fixer": "php-cs-fixer --config=php-cs-fixer.php fix --dry-run --format=checkstyle > php-cs-fixer.xml || true",
+		"ci:php:lint": "find *.php . -name '*.php' ! -path './vendor/*'  ! -path './var/*' ! -path '*node_modules/*' ! -path '*public/*' -print0 | xargs -0 -n 1 -P 4 php -l",
+		"ci:php:stan": "phpstan --no-progress --error-format=checkstyle > phpstan.xml || true",
+		"ci:sca": [
+			"@ci:composer:normalize",
+			"@ci:editorconfig:lint",
+			"@ci:php:lint",
+			"@ci:php:fixer",
+			"@ci:php:stan",
+			"@ci:language:lint",
+			"@ci:yaml:lint"
+		],
+		"ci:yaml:lint": "find ./ ! -path './vendor/*' ! -path '*/node_modules/*' \\( -name '*.yaml' -o -name '*.yml' \\) | xargs -r yaml-lint",
+		"composer:normalize": "@composer normalize --no-check-lock",
+		"editorconfig:lint": "ec --strict --fix --git-only -n",
+		"language:lint": "composer validate-translations Resources/Private/Language",
+		"php:fixer": "php-cs-fixer --config=php-cs-fixer.php fix",
+		"php:lint": "find *.php . -name '*.php' ! -path './vendor/*'  ! -path './var/*' ! -path '*node_modules/*' ! -path '*public/*' -print0 | xargs -0 -n 1 -P 4 php -l",
+		"php:stan": "phpstan --generate-baseline=phpstan-baseline.neon --allow-empty-baseline",
+		"sca": [
+			"@composer:normalize",
+			"@editorconfig:lint",
+			"@php:lint",
+			"@php:fixer",
+			"@php:stan",
+			"@language:lint",
+			"@yaml:lint"
+		],
+		"yaml:lint": "find ./ ! -path './vendor/*' ! -path '*/node_modules/*' \\( -name '*.yaml' -o -name '*.yml' \\) | xargs -r yaml-lint"
+	}
+}
