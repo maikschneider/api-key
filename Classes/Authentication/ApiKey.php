@@ -42,6 +42,14 @@ final class ApiKey
         );
     }
 
+    /**
+     * A key without scopes is unrestricted. Scopes are compared exactly.
+     */
+    public function hasScope(string $scope): bool
+    {
+        return $this->scopes === [] || in_array($scope, $this->scopes, true);
+    }
+
     public function isServiceKey(): bool
     {
         return $this->frontendUserUid === null && $this->backendUserUid === null;

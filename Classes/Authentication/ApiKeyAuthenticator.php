@@ -10,6 +10,9 @@ use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\NormalizedParams;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
 {
@@ -46,9 +49,52 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
             return $this->reject($request, InvalidReason::Expired, $identifier);
         }
 
+        $allowedIps = ApiKey::splitList((string)($row['allowed_ips'] ?? ''));
+        if ($allowedIps !== [] && !$this->isIpAllowed($request, $allowedIps)) {
+            return $this->reject($request, InvalidReason::IpNotAllowed, $identifier);
+        }
+        $sites = ApiKey::splitList((string)($row['sites'] ?? ''));
+        if ($sites !== [] && !$this->isSiteAllowed($request, $sites)) {
+            return $this->reject($request, InvalidReason::SiteNotAllowed, $identifier);
+        }
+
         $this->repository->touchLastUsed((int)$row['uid']);
 
         return AuthenticationResult::valid(ApiKey::fromRow($row));
+    }
+
+    /**
+     * @param list<string> $allowedIps
+     */
+    private function isIpAllowed(ServerRequestInterface $request, array $allowedIps): bool
+    {
+        $remoteAddress = $this->getRemoteAddress($request);
+
+        return $remoteAddress !== '' && GeneralUtility::cmpIP($remoteAddress, implode(',', $allowedIps));
+    }
+
+    /**
+     * @param list<string> $sites
+     */
+    private function isSiteAllowed(ServerRequestInterface $request, array $sites): bool
+    {
+        $site = $request->getAttribute('site');
+
+        return $site instanceof Site && in_array($site->getIdentifier(), $sites, true);
+    }
+
+    /**
+     * Prefers NormalizedParams, which resolves the client address behind
+     * trusted reverse proxies (TYPO3_CONF_VARS.SYS.reverseProxyIP).
+     */
+    private function getRemoteAddress(ServerRequestInterface $request): string
+    {
+        $normalizedParams = $request->getAttribute('normalizedParams');
+        if ($normalizedParams instanceof NormalizedParams) {
+            return $normalizedParams->getRemoteAddress();
+        }
+
+        return (string)($request->getServerParams()['REMOTE_ADDR'] ?? '');
     }
 
     private function reject(ServerRequestInterface $request, InvalidReason $reason, string $identifier = ''): AuthenticationResult
@@ -56,7 +102,7 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
         $this->logger->warning('API key rejected: {reason}', [
             'reason' => $reason->value,
             'identifier' => $identifier,
-            'remoteAddress' => (string)($request->getServerParams()['REMOTE_ADDR'] ?? ''),
+            'remoteAddress' => $this->getRemoteAddress($request),
             'uri' => (string)$request->getUri()->withQuery('')->withFragment(''),
         ]);
 

@@ -118,6 +118,42 @@ or its hash.
 The extension does not log users in. Map the bound user to your own
 authorization model.
 
+..  _developer-restrictions:
+
+Restrictions
+============
+
+The authenticator enforces the restrictions stored with a key, and rejects
+the key if one fails:
+
+Expiry
+    The key is invalid from its expiry date on (``Expired``).
+
+Allowed IPs
+    The client address must match one of the key's IP addresses or CIDR
+    ranges (``IpNotAllowed``). The address comes from the request's
+    ``normalizedParams`` attribute, which resolves the client behind proxies
+    listed in :php:`$GLOBALS['TYPO3_CONF_VARS']['SYS']['reverseProxyIP']`.
+    Without that attribute ``REMOTE_ADDR`` is used.
+
+Sites
+    The request's ``site`` attribute must be one of the key's sites
+    (``SiteNotAllowed``). Call :php:`authenticate()` after the site is
+    resolved, e.g. in a middleware placed after
+    ``typo3/cms-frontend/site``. A request without a site fails a
+    site-restricted key.
+
+Scopes are not checked by the authenticator, because only the consumer
+knows which scope an endpoint needs:
+
+..  code-block:: php
+
+    if (!$apiKey->hasScope('articles:write')) {
+        return new JsonResponse(['error' => 'Forbidden'], 403);
+    }
+
+A key without scopes has every scope. Scopes are compared exactly.
+
 ..  _developer-side-effects:
 
 Side effects

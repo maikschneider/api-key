@@ -13,13 +13,19 @@ use MaikSchneider\ApiKey\Key\ApiKeyCreator;
 use MaikSchneider\ApiKey\Key\CreatedApiKey;
 use MaikSchneider\ApiKey\Key\KeyHasher;
 use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\DateTimeAspect;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class ApiKeyAuthenticatorTest extends FunctionalTestCase
@@ -162,6 +168,81 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         self::assertSame(InvalidReason::KeyInQueryString, $result->getInvalidReason());
     }
 
+    /**
+     * @return iterable<string, array{list<string>, string, bool}>
+     */
+    public static function ipRestrictions(): iterable
+    {
+        yield 'exact ipv4' => [['192.0.2.1'], '192.0.2.1', true];
+        yield 'ipv4 range' => [['10.0.0.0/8'], '10.20.30.40', true];
+        yield 'second entry matches' => [['10.0.0.0/8', '192.0.2.0/24'], '192.0.2.99', true];
+        yield 'ipv6 range' => [['2001:db8::/32'], '2001:db8::1', true];
+        yield 'outside ipv4 range' => [['10.0.0.0/8'], '11.0.0.1', false];
+        yield 'outside ipv6 range' => [['2001:db8::/32'], '2001:db9::1', false];
+        yield 'ipv4 client for ipv6 range' => [['2001:db8::/32'], '192.0.2.1', false];
+        yield 'no client address' => [['10.0.0.0/8'], '', false];
+    }
+
+    /**
+     * @param list<string> $allowedIps
+     */
+    #[Test]
+    #[DataProvider('ipRestrictions')]
+    public function ipRestriction(array $allowedIps, string $remoteAddress, bool $allowed): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('IP', allowedIps: $allowedIps);
+
+        $result = $this->authenticate($this->requestWithKey($key->secret, ['REMOTE_ADDR' => $remoteAddress]));
+
+        self::assertSame($allowed ? null : InvalidReason::IpNotAllowed, $result->getInvalidReason());
+        self::assertSame($allowed, $result->isValid());
+    }
+
+    #[Test]
+    public function ipRestrictionUsesClientAddressBehindTrustedProxy(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Proxy', allowedIps: ['192.0.2.0/24']);
+        $request = $this->requestWithKey($key->secret, [
+            'REMOTE_ADDR' => '10.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '192.0.2.7',
+        ]);
+        $systemConfiguration = ['reverseProxyIP' => '10.0.0.1', 'reverseProxyHeaderMultiValue' => 'last'];
+
+        $behindProxy = $request->withAttribute('normalizedParams', NormalizedParams::createFromServerParams($request->getServerParams(), $systemConfiguration));
+        self::assertTrue($this->authenticate($behindProxy)->isValid());
+
+        $untrustedProxy = $request->withAttribute('normalizedParams', NormalizedParams::createFromServerParams($request->getServerParams(), []));
+        self::assertSame(InvalidReason::IpNotAllowed, $this->authenticate($untrustedProxy)->getInvalidReason());
+    }
+
+    #[Test]
+    public function siteRestriction(): void
+    {
+        $this->writeSiteConfiguration('main');
+        $this->writeSiteConfiguration('other');
+        $key = $this->get(ApiKeyCreator::class)->create('Site', sites: ['main']);
+        $request = $this->requestWithKey($key->secret);
+
+        self::assertTrue($this->authenticate($request->withAttribute('site', new Site('main', 1, [])))->isValid());
+        self::assertSame(
+            InvalidReason::SiteNotAllowed,
+            $this->authenticate($request->withAttribute('site', new Site('other', 2, [])))->getInvalidReason()
+        );
+        self::assertSame(
+            InvalidReason::SiteNotAllowed,
+            $this->authenticate($request->withAttribute('site', new NullSite()))->getInvalidReason()
+        );
+        self::assertSame(InvalidReason::SiteNotAllowed, $this->authenticate($request)->getInvalidReason());
+    }
+
+    #[Test]
+    public function keyWithoutRestrictionsIsValidWithoutSiteAndAddress(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Unrestricted');
+
+        self::assertTrue($this->authenticate($this->requestWithKey($key->secret))->isValid());
+    }
+
     #[Test]
     public function rejectionIsLoggedWithIdentifierButWithoutSecret(): void
     {
@@ -206,6 +287,15 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
     private function requestWithKey(string $key, array $serverParams = []): ServerRequest
     {
         return new ServerRequest('https://example.com/api', 'GET', 'php://input', ['X-API-Key' => $key], $serverParams);
+    }
+
+    private function writeSiteConfiguration(string $identifier): void
+    {
+        GeneralUtility::mkdir_deep(Environment::getConfigPath() . '/sites/' . $identifier);
+        file_put_contents(
+            Environment::getConfigPath() . '/sites/' . $identifier . '/config.yaml',
+            "rootPageId: 1\nbase: /" . $identifier . "/\nlanguages:\n  - languageId: 0\n    title: English\n    locale: en_US.UTF-8\n    base: /\n"
+        );
     }
 
     private function setNow(int $timestamp): void
