@@ -58,6 +58,48 @@ final class ApiKeyRepositoryTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function findAllReturnsHiddenButNotDeletedRecordsNewestFirst(): void
+    {
+        $uids = array_map(
+            static fn (array $row): int => (int)$row['uid'],
+            $this->get(ApiKeyRepository::class)->findAll()
+        );
+
+        self::assertSame([5, 4, 2, 1], $uids);
+    }
+
+    #[Test]
+    public function findByIdentifierIgnoresDeletedRecords(): void
+    {
+        $subject = $this->get(ApiKeyRepository::class);
+
+        self::assertSame([2], array_map(static fn (array $row): int => (int)$row['uid'], $subject->findByIdentifier('t3key_bbbbbbbb')));
+        self::assertSame([], $subject->findByIdentifier('t3key_cccccccc'));
+    }
+
+    #[Test]
+    public function findByUidIgnoresDeletedRecords(): void
+    {
+        $subject = $this->get(ApiKeyRepository::class);
+
+        self::assertSame(2, (int)($subject->findByUid(2)['uid'] ?? 0));
+        self::assertNull($subject->findByUid(3));
+    }
+
+    #[Test]
+    public function revokeHidesActiveRecordOnce(): void
+    {
+        $subject = $this->get(ApiKeyRepository::class);
+
+        self::assertTrue($subject->revoke(1));
+        self::assertSame(1, (int)$this->getRow(1)['hidden']);
+        self::assertSame(self::NOW, (int)$this->getRow(1)['tstamp']);
+        self::assertFalse($subject->revoke(1));
+        self::assertFalse($subject->revoke(3));
+        self::assertSame(0, (int)$this->getRow(3)['hidden']);
+    }
+
+    #[Test]
     public function addStoresRecordOnRootPage(): void
     {
         $uid = $this->get(ApiKeyRepository::class)->add(str_repeat('d', 64), 't3key_dddddddd', [
