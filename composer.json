@@ -68,6 +68,7 @@
 			},
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"extension-key": "api_key",
+			"version": "0.0.0",
 			"web-dir": "public"
 		}
 	},

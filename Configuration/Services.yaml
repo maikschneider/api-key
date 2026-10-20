@@ -3,3 +3,9 @@ services:
     autowire: true
     autoconfigure: true
     public: false
+
+  MaikSchneider\ApiKey\:
+    resource: '../Classes/*'
+
+  MaikSchneider\ApiKey\Repository\ApiKeyRepository:
+    public: true
