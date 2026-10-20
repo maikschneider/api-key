@@ -44,8 +44,7 @@ final class CommandsTest extends FunctionalTestCase
         ]);
 
         $tester->assertCommandIsSuccessful();
-        self::assertSame(1, preg_match('/^(t3key_[A-Za-z0-9_-]{43})$/m', $tester->getDisplay(), $matches));
-        $secret = $matches[1];
+        $secret = $this->extractSecret($tester);
         self::assertSame(1, substr_count($tester->getDisplay(), $secret));
 
         $row = $this->get(ApiKeyRepository::class)->findByHash((new KeyHasher())->hash($secret));
@@ -81,7 +80,7 @@ final class CommandsTest extends FunctionalTestCase
     {
         $create = new CommandTester($this->get(CreateCommand::class));
         $create->execute(['--title' => 'Service key']);
-        preg_match('/^(t3key_[A-Za-z0-9_-]{43})$/m', $create->getDisplay(), $matches);
+        $secret = $this->extractSecret($create);
 
         $tester = new CommandTester($this->get(ListCommand::class));
         $tester->execute([]);
@@ -89,8 +88,8 @@ final class CommandsTest extends FunctionalTestCase
         $tester->assertCommandIsSuccessful();
         $display = $tester->getDisplay();
         self::assertStringContainsString('Service key', $display);
-        self::assertStringContainsString(substr($matches[1], 0, 14), $display);
-        self::assertStringNotContainsString($matches[1], $display);
+        self::assertStringContainsString(substr($secret, 0, 14), $display);
+        self::assertStringNotContainsString($secret, $display);
         self::assertStringContainsString('service', $display);
         self::assertStringContainsString('active', $display);
     }
@@ -100,8 +99,8 @@ final class CommandsTest extends FunctionalTestCase
     {
         $create = new CommandTester($this->get(CreateCommand::class));
         $create->execute(['--title' => 'To revoke']);
-        preg_match('/^(t3key_[A-Za-z0-9_-]{43})$/m', $create->getDisplay(), $matches);
-        $identifier = substr($matches[1], 0, 14);
+        $secret = $this->extractSecret($create);
+        $identifier = substr($secret, 0, 14);
 
         $tester = new CommandTester($this->get(RevokeCommand::class));
         $tester->execute(['key' => $identifier]);
@@ -122,11 +121,20 @@ final class CommandsTest extends FunctionalTestCase
     {
         $create = new CommandTester($this->get(CreateCommand::class));
         $create->execute(['--title' => 'Key']);
-        preg_match('/^(t3key_[A-Za-z0-9_-]{43})$/m', $create->getDisplay(), $matches);
+        $secret = $this->extractSecret($create);
 
         $tester = new CommandTester($this->get(RevokeCommand::class));
-        self::assertSame(Command::INVALID, $tester->execute(['key' => $matches[1]]));
+        self::assertSame(Command::INVALID, $tester->execute(['key' => $secret]));
         self::assertSame(Command::FAILURE, $tester->execute(['key' => '999']));
         self::assertSame(Command::FAILURE, $tester->execute(['key' => 't3key_unknown1']));
+    }
+
+    private function extractSecret(CommandTester $tester): string
+    {
+        if (preg_match('/^(t3key_[A-Za-z0-9_-]{43})$/m', $tester->getDisplay(), $matches) !== 1) {
+            self::fail('The command output contains no key');
+        }
+
+        return $matches[1];
     }
 }
