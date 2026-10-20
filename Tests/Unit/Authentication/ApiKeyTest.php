@@ -49,4 +49,22 @@ final class ApiKeyTest extends UnitTestCase
     {
         self::assertSame(['a', 'b', 'c'], ApiKey::splitList(" a,b \n\nc,a "));
     }
+
+    #[Test]
+    public function keyWithoutScopesHasEveryScope(): void
+    {
+        self::assertTrue((new ApiKey(1, 'Key', 't3key_aaaaaaaa'))->hasScope('articles:write'));
+    }
+
+    #[Test]
+    public function scopesAreComparedExactly(): void
+    {
+        $subject = new ApiKey(1, 'Key', 't3key_aaaaaaaa', ['articles:read']);
+
+        self::assertTrue($subject->hasScope('articles:read'));
+        self::assertFalse($subject->hasScope('articles:write'));
+        self::assertFalse($subject->hasScope('articles'));
+        self::assertFalse($subject->hasScope('Articles:read'));
+        self::assertFalse($subject->hasScope(''));
+    }
 }
