@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:api_key/Resources/Private/Language/locallang_db.xlf" date="2026-10-20T00:00:00Z" product-name="api_key">
+		<header/>
+		<body>
+			<trans-unit id="tx_apikey_key">
+				<source>API key</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.key_prefix">
+				<source>Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.key_prefix.description">
+				<source>The first characters of the key. Safe to show and log; the full key is only shown once at creation.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.fe_user">
+				<source>Frontend user</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.be_user">
+				<source>Backend user</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.created_by">
+				<source>Created by</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.scopes">
+				<source>Scopes</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.scopes.description">
+				<source>One scope per line. Leave empty to allow everything.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.expires_at">
+				<source>Expires at</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.last_used_at">
+				<source>Last used at</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.allowed_ips">
+				<source>Allowed IP addresses</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.allowed_ips.description">
+				<source>One IP address or CIDR range per line. Leave empty to allow any address.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.sites">
+				<source>Sites</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.sites.description">
+				<source>One site identifier per line. Leave empty to allow every site.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.tabs.restrictions">
+				<source>Restrictions</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.palettes.identity">
+				<source>Identity</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
