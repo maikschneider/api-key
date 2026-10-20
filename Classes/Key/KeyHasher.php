@@ -9,7 +9,7 @@ use MaikSchneider\ApiKey\Exception\MissingEncryptionKeyException;
 /**
  * Keys carry 256 bits of entropy, so a keyed fast hash is enough and keeps the
  * hash usable as an indexed lookup column. The HMAC secret is derived from the
- * TYPO3 encryptionKey, so a leaked database alone does not allow to check
+ * TYPO3 encryptionKey, so a leaked database alone does not let an attacker check
  * guessed keys. Rotating the encryptionKey invalidates every stored key.
  */
 final class KeyHasher

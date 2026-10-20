@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MaikSchneider\ApiKey\Tests\Functional\Repository;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
@@ -72,6 +73,14 @@ final class ApiKeyRepositoryTest extends FunctionalTestCase
         self::assertSame(12, (int)$row['fe_user']);
         self::assertSame(self::NOW, (int)$row['crdate']);
         self::assertSame(self::NOW, (int)$row['tstamp']);
+    }
+
+    #[Test]
+    public function addRejectsDuplicateHash(): void
+    {
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $this->get(ApiKeyRepository::class)->add(str_repeat('a', 64), 't3key_aaaaaaaa');
     }
 
     #[Test]

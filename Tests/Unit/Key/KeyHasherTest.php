@@ -13,6 +13,12 @@ final class KeyHasherTest extends UnitTestCase
 {
     private const KEY = 't3key_aGVsbG8td29ybGQtdGhpcy1pcy1hLXRlc3Qta2V5';
 
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+        parent::tearDown();
+    }
+
     #[Test]
     public function hashIsDeterministicHexSha256(): void
     {

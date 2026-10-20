@@ -3,4 +3,5 @@
 ,1,0,"Active","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","t3key_aaaaaaaa",0,0,0
 ,2,0,"Hidden","bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","t3key_bbbbbbbb",1,0,0
 ,3,0,"Deleted","cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","t3key_cccccccc",0,1,0
-,4,0,"Empty hash","","",0,0,0
+,4,0,"Without hash",\NULL,"",0,0,0
+,5,0,"Also without hash",\NULL,"",0,0,0
