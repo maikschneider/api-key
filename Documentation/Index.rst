@@ -54,6 +54,10 @@ or cookies.
 
         Key format, managing keys on the command line and secret scanning.
 
+    ..  card:: :ref:`Developer guide <developer>`
+
+        Verifying keys in your own API, middleware or authentication service.
+
 ..  Table of Contents
 
 ..  toctree::
@@ -64,3 +68,4 @@ or cookies.
     Introduction/Index
     Installation/Index
     Usage/Index
+    Developer/Index

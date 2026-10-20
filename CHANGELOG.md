@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`ApiKeyAuthenticatorInterface::authenticate()` verifies the key of a request.** It reads `X-API-Key` and `Authorization: Bearer t3key_…` and returns an `AuthenticationResult` that is *not present*, *valid* with an `ApiKey` (uid, title, identifier, scopes, bound frontend or backend user, expiry) or *invalid* with an `InvalidReason`. Bearer tokens without the `t3key_` prefix count as not present, so other authenticators still get them. Keys in the query string, malformed, unknown, revoked and expired keys are invalid. No session, no cookie; rejections are logged without the key ([#1](https://github.com/maikschneider/api-key/issues/1)).
+
 - **Key format `t3key_<base64url(32 random bytes)>`.** The prefix makes keys recognisable for secret scanners; the documentation ships a GitHub custom pattern and a gitleaks rule. The prefix plus eight characters form the identifier that is shown in the backend and in logs ([#3](https://github.com/maikschneider/api-key/issues/3)).
 - **`apikey:create`, `apikey:list` and `apikey:revoke` commands.** `apikey:create` prints the key once and validates users, expiry, IP ranges and sites before storing anything. `apikey:revoke` takes the identifier or the uid and hides the record. The `ApiKeyCreator` service does the same for other callers ([#3](https://github.com/maikschneider/api-key/issues/3)).
 
