@@ -50,6 +50,10 @@ or cookies.
 
         How to install the extension via Composer.
 
+    ..  card:: :ref:`Usage <usage>`
+
+        Key format, managing keys on the command line and secret scanning.
+
 ..  Table of Contents
 
 ..  toctree::
@@ -59,3 +63,4 @@ or cookies.
 
     Introduction/Index
     Installation/Index
+    Usage/Index

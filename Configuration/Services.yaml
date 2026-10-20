@@ -9,3 +9,6 @@ services:
 
   MaikSchneider\ApiKey\Repository\ApiKeyRepository:
     public: true
+
+  MaikSchneider\ApiKey\Key\ApiKeyCreator:
+    public: true

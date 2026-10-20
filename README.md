@@ -35,6 +35,16 @@ curl -H 'Authorization: Bearer t3key_…' https://example.com/api/articles
 composer require maikschneider/api-key
 ```
 
+## 🔑 Managing keys
+
+```bash
+vendor/bin/typo3 apikey:create --title="CI deploy" --scope=articles:write --expires="+90 days"
+vendor/bin/typo3 apikey:list
+vendor/bin/typo3 apikey:revoke t3key_KhhNfTRL
+```
+
+The key is printed once and cannot be recovered.
+
 ## 🧑‍💻 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
