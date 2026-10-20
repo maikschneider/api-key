@@ -1,0 +1,2 @@
+# cat=basic; type=boolean; label=Reject invalid keys: Answer requests that carry an invalid, revoked or expired API key with 401 right away. When off, the result is only attached to the request as attribute "api_key" and the consuming API decides.
+rejectInvalidKeys = 0

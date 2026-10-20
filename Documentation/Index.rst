@@ -54,6 +54,10 @@ or cookies.
 
         Key format, managing keys on the command line and secret scanning.
 
+    ..  card:: :ref:`Configuration <configuration>`
+
+        The frontend middleware and the extension configuration.
+
     ..  card:: :ref:`Developer guide <developer>`
 
         Verifying keys in your own API, middleware or authentication service.
@@ -68,4 +72,5 @@ or cookies.
     Introduction/Index
     Installation/Index
     Usage/Index
+    Configuration/Index
     Developer/Index
