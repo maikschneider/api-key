@@ -12,3 +12,10 @@ services:
 
   MaikSchneider\ApiKey\Key\ApiKeyCreator:
     public: true
+
+  MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticator:
+    public: true
+
+  MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticatorInterface:
+    alias: MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticator
+    public: true

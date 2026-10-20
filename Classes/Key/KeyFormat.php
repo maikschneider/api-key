@@ -20,9 +20,16 @@ final class KeyFormat
 
     private const PATTERN = '/^t3key_[A-Za-z0-9_-]{43}$/D';
 
+    private const EMBEDDED_PATTERN = '/t3key_[A-Za-z0-9_-]{43}/';
+
     public static function isKey(string $value): bool
     {
         return preg_match(self::PATTERN, $value) === 1;
+    }
+
+    public static function containsKey(string $value): bool
+    {
+        return preg_match(self::EMBEDDED_PATTERN, $value) === 1;
     }
 
     public static function hasPrefix(string $value): bool
