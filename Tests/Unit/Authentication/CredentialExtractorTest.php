@@ -71,4 +71,37 @@ final class CredentialExtractorTest extends UnitTestCase
 
         self::assertSame($expected, (new CredentialExtractor())->extract($request));
     }
+
+    /**
+     * Query strings as sent, before PHP parses them into parameters.
+     *
+     * @return iterable<string, array{string}>
+     */
+    public static function rawQueryStrings(): iterable
+    {
+        yield 'repeated parameter overwrites the key' => ['key=' . self::KEY . '&key=redacted'];
+        yield 'key as parameter name' => [self::KEY . '=1'];
+        yield 'key in nested parameter name' => ['filter[' . self::KEY . ']=1'];
+        yield 'url-encoded key' => ['key=' . implode('', array_map(static fn (string $char): string => '%' . bin2hex($char), str_split(self::KEY)))];
+        yield 'key behind an encoded separator' => ['q=x%26token%3D' . self::KEY];
+    }
+
+    #[Test]
+    #[DataProvider('rawQueryStrings')]
+    public function keyInRawQueryStringIsRejectedEvenWithValidHeader(string $query): void
+    {
+        $request = (new ServerRequest('https://example.com/api?' . $query, 'GET', 'php://input', ['X-API-Key' => self::KEY]));
+        parse_str($query, $parsed);
+
+        self::assertSame(InvalidReason::KeyInQueryString, (new CredentialExtractor())->extract($request->withQueryParams($parsed)));
+    }
+
+    #[Test]
+    public function queryStringWithoutKeyIsIgnored(): void
+    {
+        $request = (new ServerRequest('https://example.com/api?q=t3key_&page=2', 'GET', 'php://input', ['X-API-Key' => self::KEY]))
+            ->withQueryParams(['q' => 't3key_', 'page' => '2']);
+
+        self::assertSame(self::KEY, (new CredentialExtractor())->extract($request));
+    }
 }

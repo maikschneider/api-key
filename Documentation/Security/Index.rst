@@ -32,7 +32,10 @@ Sending keys
 *   Send them in the ``X-API-Key`` or ``Authorization: Bearer`` header.
 *   A key in the query string is always rejected, even when a valid header is
     present, because query strings end up in access logs, browser history and
-    ``Referer`` headers. Treat such a key as leaked and revoke it.
+    ``Referer`` headers. Treat such a key as leaked and revoke it. The check
+    covers parameter values and names in the query string as sent, including
+    URL-encoded keys and parameters that a later one of the same name
+    overwrites.
 
 ..  _security-apache:
 

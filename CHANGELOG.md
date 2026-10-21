@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Keys in the query string are found even when PHP drops them while parsing.** The extractor also checks the query string as sent and parameter names, so `?key=t3key_…&key=redacted` or `?t3key_…=1` is rejected as `KeyInQueryString`, even with a valid header ([#22](https://github.com/maikschneider/api-key/issues/22)).
 - **Broken `Authorization` headers carrying a key are rejected.** `Bearer t3key_… garbage` is `Malformed`, and a `t3key_` bearer token in one of several `Authorization` headers is `Ambiguous`. Both used to count as no key, so `rejectInvalidKeys` did not answer them with `401`. Foreign bearer tokens still count as no key ([#20](https://github.com/maikschneider/api-key/issues/20)).
 
 - **Restrictions without a value no longer make a key unrestricted.** `ApiKeyCreator` and `apikey:create` split scopes, allowed IPs and sites the way authentication reads them and reject a given restriction that contains no value, such as `--scope=",,,"`. A record whose restriction field holds only separators, e.g. edited in the backend, is rejected as `InvalidReason::Misconfigured` ([#21](https://github.com/maikschneider/api-key/issues/21)).
