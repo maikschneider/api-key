@@ -112,6 +112,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.unit.xml
           flags: unit
+          disable_search: true
           fail_ci_if_error: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
       - name: Upload functional coverage to Codecov
@@ -120,4 +121,5 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.functional.xml
           flags: functional
+          disable_search: true
           fail_ci_if_error: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
