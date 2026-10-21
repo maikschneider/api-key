@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0.0" encoding="UTF-8"?>
 <guides xmlns="https://www.phpdoc.org/guides"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
@@ -16,8 +16,8 @@
                interlink-shortcode="maikschneider/api-key"
     />
     <project title="API_KEY"
-             release="main"
-             version="main"
+             release="1.0.0"
+             version="1.0.0"
              copyright="since 2026 by Maik Schneider &amp; Contributors"
     />
     <inventory id="t3coreapi"

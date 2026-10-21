@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-21
+
 ### Added
 
 - **Documentation for v1**: introduction and comparison with the core authentication service, sending keys with curl, security (storage, `encryptionKey` rotation, query strings, Apache and the `Authorization` header, logging) and known problems ([#7](https://github.com/maikschneider/api-key/issues/7)).
