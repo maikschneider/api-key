@@ -92,6 +92,8 @@ Reason                    Cause
 ``Expired``               The expiry date has passed
 ``IpNotAllowed``          The client IP is outside the key's allowed ranges
 ``SiteNotAllowed``        The request targets a site the key is not allowed for
+``UserUnavailable``       The bound frontend or backend user is deleted,
+                          disabled or outside its start and end time
 ========================  ======================================================
 
 ..  _developer-api-key:
@@ -158,6 +160,12 @@ Sites
     resolved, e.g. in a middleware placed after
     ``typo3/cms-frontend/site``. A request without a site fails a
     site-restricted key.
+
+Bound user
+    A key bound to a frontend or backend user stops working while that user
+    is deleted, disabled or outside its start and end time
+    (``UserUnavailable``). The creator of a key (``created_by``) is only
+    recorded and does not affect authentication.
 
 Scopes are not checked by the authenticator, because only the consumer
 knows which scope an endpoint needs:

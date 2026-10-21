@@ -30,6 +30,7 @@ final class CreateCommand extends Command
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'Human readable label, e.g. "CI deploy script"')
             ->addOption('fe-user', null, InputOption::VALUE_REQUIRED, 'Bind the key to this fe_users uid')
             ->addOption('be-user', null, InputOption::VALUE_REQUIRED, 'Bind the key to this be_users uid')
+            ->addOption('created-by', null, InputOption::VALUE_REQUIRED, 'Record this be_users uid as creator of the key')
             ->addOption('scope', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Restrict the key to a scope (repeatable)')
             ->addOption('expires', null, InputOption::VALUE_REQUIRED, 'Expiry as date or relative time, e.g. "2027-01-01" or "+90 days"')
             ->addOption('allowed-ip', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Restrict the key to an IP address or CIDR range (repeatable)')
@@ -53,6 +54,7 @@ final class CreateCommand extends Command
                 expiresAt: $this->getExpiresAt($input),
                 allowedIps: $this->getListOption($input, 'allowed-ip'),
                 sites: $this->getListOption($input, 'site'),
+                createdBy: $this->getUidOption($input, 'created-by'),
             );
         } catch (InvalidKeyDefinitionException $exception) {
             $io->error($exception->getMessage());

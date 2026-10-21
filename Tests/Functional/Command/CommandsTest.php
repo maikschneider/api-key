@@ -41,6 +41,7 @@ final class CommandsTest extends FunctionalTestCase
             '--scope' => ['articles:read', 'articles:write'],
             '--expires' => '+90 days',
             '--allowed-ip' => ['10.0.0.0/8'],
+            '--created-by' => '1',
         ]);
 
         $tester->assertCommandIsSuccessful();
@@ -54,6 +55,7 @@ final class CommandsTest extends FunctionalTestCase
         self::assertSame("articles:read\narticles:write", $row['scopes']);
         self::assertSame(strtotime('+90 days', self::NOW), (int)$row['expires_at']);
         self::assertSame('10.0.0.0/8', $row['allowed_ips']);
+        self::assertSame(1, (int)$row['created_by']);
     }
 
     #[Test]
@@ -62,6 +64,7 @@ final class CommandsTest extends FunctionalTestCase
         $cases = [
             [['--title' => 'x', '--fe-user' => '1', '--be-user' => '1'], 'not both'],
             [['--title' => 'x', '--fe-user' => 'abc'], '--fe-user must be a positive uid'],
+            [['--title' => 'x', '--created-by' => '99'], 'Backend user 99 does not exist'],
             [['--title' => 'x', '--expires' => 'someday'], 'is not a valid date'],
             [['--title' => 'x', '--expires' => '-1 day'], 'must be in the future'],
             [[], 'needs a title'],

@@ -18,4 +18,5 @@ enum InvalidReason: string
     case Expired = 'expired';
     case IpNotAllowed = 'ip_not_allowed';
     case SiteNotAllowed = 'site_not_allowed';
+    case UserUnavailable = 'user_unavailable';
 }
