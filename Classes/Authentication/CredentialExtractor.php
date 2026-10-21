@@ -20,7 +20,7 @@ final class CredentialExtractor
 
     public function extract(ServerRequestInterface $request): string|InvalidReason|null
     {
-        if ($this->queryContainsKey($request->getQueryParams())) {
+        if ($this->queryContainsKey($request->getQueryParams()) || KeyFormat::containsKey(urldecode($request->getUri()->getQuery()))) {
             return InvalidReason::KeyInQueryString;
         }
 
@@ -77,11 +77,17 @@ final class CredentialExtractor
     }
 
     /**
+     * The parsed parameters alone are not enough: PHP drops repeated names,
+     * so the raw query string is checked as well.
+     *
      * @param array<mixed> $params
      */
     private function queryContainsKey(array $params): bool
     {
-        foreach ($params as $value) {
+        foreach ($params as $name => $value) {
+            if (is_string($name) && KeyFormat::containsKey($name)) {
+                return true;
+            }
             if (is_array($value) ? $this->queryContainsKey($value) : (is_string($value) && KeyFormat::containsKey($value))) {
                 return true;
             }
