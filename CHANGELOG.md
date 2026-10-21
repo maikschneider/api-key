@@ -29,3 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`0.0.0.0/0` allows every IPv4 client.** `GeneralUtility::cmpIP()` read an IPv4 prefix length of zero as an exact address, so such a key rejected every client. IPv4 and IPv6 ranges still never match the other address family ([#23](https://github.com/maikschneider/api-key/issues/23)).
+- **`apikey:create --expires` rejects every date that is not in the future.** `--expires=@0` and other dates at the Unix epoch used to create a key that never expires, because `0` means "no expiry" ([#24](https://github.com/maikschneider/api-key/issues/24)).
