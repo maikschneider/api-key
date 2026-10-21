@@ -45,6 +45,13 @@ vendor/bin/typo3 apikey:revoke t3key_KhhNfTRL
 
 The key is printed once and cannot be recovered.
 
+## 📙 Documentation
+
+Usage, configuration, the developer guide for consumers and security notes: [docs.typo3.org](https://docs.typo3.org/p/maikschneider/api-key/main/en-us/).
+
+> [!TIP]
+> Behind Apache, bearer tokens only reach TYPO3 with `CGIPassAuth On`. The `X-API-Key` header always works.
+
 ## 🧑‍💻 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).

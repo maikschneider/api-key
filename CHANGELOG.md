@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Documentation for v1**: introduction and comparison with the core authentication service, sending keys with curl, security (storage, `encryptionKey` rotation, query strings, Apache and the `Authorization` header, logging) and known problems ([#7](https://github.com/maikschneider/api-key/issues/7)).
+
 - **Keys stop working while their bound user is unavailable.** A key bound to a frontend or backend user that is deleted, disabled or outside its start and end time is invalid (`InvalidReason::UserUnavailable`). `apikey:create --created-by=<be_users uid>` records the creator, which `apikey:list` shows ([#6](https://github.com/maikschneider/api-key/issues/6)).
 
 - **Frontend middleware attaches the result as request attribute `api_key`.** It runs after site resolution and before frontend user authentication, never logs in a user and sets no cookie. With the extension setting `rejectInvalidKeys` it answers invalid keys with `401` and `WWW-Authenticate` itself ([#5](https://github.com/maikschneider/api-key/issues/5)).
