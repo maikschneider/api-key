@@ -56,19 +56,36 @@ final class CredentialExtractor
         return trim($values[0]);
     }
 
-    private function fromBearerToken(ServerRequestInterface $request): ?string
+    /**
+     * Ownership is decided before the syntax is checked, so a broken header
+     * carrying a key is rejected instead of being passed on as "no key".
+     */
+    private function fromBearerToken(ServerRequestInterface $request): string|InvalidReason|null
     {
-        $authorization = $request->getHeaderLine('Authorization');
-        if ($authorization === '') {
+        $values = $request->getHeader('Authorization');
+        if ($values === []) {
             // Apache with PHP-FPM may only expose the header after a rewrite
             $serverParams = $request->getServerParams();
-            $authorization = (string)($serverParams['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+            $redirected = (string)($serverParams['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+            $values = $redirected !== '' ? [$redirected] : [];
         }
-        if (preg_match('/^Bearer\s+(\S+)\s*$/i', $authorization, $matches) !== 1) {
+        $ownValues = array_values(array_filter($values, $this->isOwnBearerToken(...)));
+        if ($ownValues === []) {
             return null;
         }
+        if (count($values) > 1) {
+            return InvalidReason::Ambiguous;
+        }
+        if (preg_match('/^\s*Bearer\s+(\S+)\s*$/iD', $ownValues[0], $matches) !== 1) {
+            return InvalidReason::Malformed;
+        }
 
-        return KeyFormat::hasPrefix($matches[1]) ? $matches[1] : null;
+        return $matches[1];
+    }
+
+    private function isOwnBearerToken(string $value): bool
+    {
+        return preg_match('/(?:^|,)\s*(?i:Bearer)\s+' . preg_quote(KeyFormat::PREFIX, '/') . '/', $value) === 1;
     }
 
     private function validate(string $candidate): string|InvalidReason
