@@ -50,6 +50,9 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
             return $this->reject($request, InvalidReason::Expired, $identifier);
         }
 
+        if (!$this->hasValidRestrictions($row)) {
+            return $this->reject($request, InvalidReason::Misconfigured, $identifier);
+        }
         if (!$this->isBoundUserAvailable($row)) {
             return $this->reject($request, InvalidReason::UserUnavailable, $identifier);
         }
@@ -65,6 +68,24 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
         $this->repository->touchLastUsed((int)$row['uid']);
 
         return AuthenticationResult::valid(ApiKey::fromRow($row));
+    }
+
+    /**
+     * A restriction field that is filled but contains no value, e.g. only
+     * commas, must not turn into an unrestricted key.
+     *
+     * @param array<string, mixed> $row
+     */
+    private function hasValidRestrictions(array $row): bool
+    {
+        foreach (['scopes', 'allowed_ips', 'sites'] as $field) {
+            $value = (string)($row[$field] ?? '');
+            if (trim($value) !== '' && ApiKey::splitList($value) === []) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -85,8 +106,30 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
     private function isIpAllowed(ServerRequestInterface $request, array $allowedIps): bool
     {
         $remoteAddress = $this->getRemoteAddress($request);
+        if ($remoteAddress === '') {
+            return false;
+        }
+        foreach ($allowedIps as $allowedIp) {
+            if ($this->matchesIp($remoteAddress, $allowedIp)) {
+                return true;
+            }
+        }
 
-        return $remoteAddress !== '' && GeneralUtility::cmpIP($remoteAddress, implode(',', $allowedIps));
+        return false;
+    }
+
+    /**
+     * GeneralUtility::cmpIP() treats an IPv4 prefix length of zero as an exact
+     * address, so 0.0.0.0/0 would match nothing but 0.0.0.0.
+     */
+    private function matchesIp(string $remoteAddress, string $allowedIp): bool
+    {
+        $parts = explode('/', $allowedIp, 2);
+        if (($parts[1] ?? null) === '0' && GeneralUtility::validIPv4($parts[0])) {
+            return GeneralUtility::validIPv4($remoteAddress);
+        }
+
+        return GeneralUtility::cmpIP($remoteAddress, $allowedIp);
     }
 
     /**

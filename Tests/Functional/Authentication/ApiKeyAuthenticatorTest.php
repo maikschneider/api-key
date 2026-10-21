@@ -126,6 +126,53 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         self::assertSame(InvalidReason::Revoked, $this->authenticate($this->requestWithKey($key->secret))->getInvalidReason());
     }
 
+    /**
+     * @return iterable<string, array{array<string, string>}>
+     */
+    public static function restrictionsWithoutValues(): iterable
+    {
+        yield 'scopes of commas' => [['scopes' => ',,,']];
+        yield 'scopes of commas and line breaks' => [['scopes' => " ,\n, "]];
+        yield 'allowed ips of commas' => [['allowed_ips' => ',']];
+        yield 'sites of commas' => [['sites' => ', ,']];
+    }
+
+    /**
+     * @param array<string, string> $fields
+     */
+    #[Test]
+    #[DataProvider('restrictionsWithoutValues')]
+    public function keyWithRestrictionWithoutValuesIsMisconfigured(array $fields): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Edited in the backend');
+        $this->updateKey($key, $fields);
+
+        self::assertSame(InvalidReason::Misconfigured, $this->authenticate($this->requestWithKey($key->secret))->getInvalidReason());
+    }
+
+    #[Test]
+    public function blankRestrictionsLeaveTheKeyUnrestricted(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Blank');
+        $this->updateKey($key, ['scopes' => " \n ", 'allowed_ips' => '', 'sites' => "\n"]);
+
+        $apiKey = $this->authenticate($this->requestWithKey($key->secret))->getApiKey();
+        self::assertNotNull($apiKey);
+        self::assertTrue($apiKey->hasScope('admin'));
+    }
+
+    #[Test]
+    public function commaSeparatedScopesRoundTripThroughAuthentication(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Scoped', scopes: ['articles:read,articles:write']);
+
+        $apiKey = $this->authenticate($this->requestWithKey($key->secret))->getApiKey();
+        self::assertNotNull($apiKey);
+        self::assertSame(['articles:read', 'articles:write'], $apiKey->scopes);
+        self::assertTrue($apiKey->hasScope('articles:write'));
+        self::assertFalse($apiKey->hasScope('admin'));
+    }
+
     #[Test]
     public function deletedKeyIsRevoked(): void
     {
@@ -182,6 +229,15 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         yield 'outside ipv6 range' => [['2001:db8::/32'], '2001:db9::1', false];
         yield 'ipv4 client for ipv6 range' => [['2001:db8::/32'], '192.0.2.1', false];
         yield 'no client address' => [['10.0.0.0/8'], '', false];
+        yield 'ipv4 /0 matches any ipv4 client' => [['0.0.0.0/0'], '192.0.2.1', true];
+        yield 'ipv4 /0 does not match ipv6 client' => [['0.0.0.0/0'], '2001:db8::1', false];
+        yield 'ipv4 /0 after a non-matching entry' => [['10.0.0.0/8', '0.0.0.0/0'], '192.0.2.1', true];
+        yield 'ipv6 /0 matches any ipv6 client' => [['::/0'], '2001:db8::1', true];
+        yield 'ipv6 /0 does not match ipv4 client' => [['::/0'], '192.0.2.1', false];
+        yield 'ipv4 /32 matches the address' => [['192.0.2.1/32'], '192.0.2.1', true];
+        yield 'ipv4 /32 does not match a neighbour' => [['192.0.2.1/32'], '192.0.2.2', false];
+        yield 'ipv6 /128 matches the address' => [['2001:db8::1/128'], '2001:db8::1', true];
+        yield 'ipv6 /128 does not match a neighbour' => [['2001:db8::1/128'], '2001:db8::2', false];
     }
 
     /**
@@ -371,7 +427,7 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
     }
 
     /**
-     * @param array<string, int> $fields
+     * @param array<string, int|string> $fields
      */
     private function updateKey(CreatedApiKey $key, array $fields): void
     {

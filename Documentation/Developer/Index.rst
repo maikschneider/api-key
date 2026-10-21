@@ -83,8 +83,11 @@ Invalid reasons
 Reason                    Cause
 ========================  ======================================================
 ``Malformed``             The ``X-API-Key`` header or a ``t3key_`` bearer token
-                          is not a well-formed key
-``Ambiguous``             Two different keys, or a repeated ``X-API-Key`` header
+                          is not a well-formed key, e.g. followed by more text
+                          or comma-joined with another token
+``Ambiguous``             Two different keys, a repeated ``X-API-Key`` header,
+                          or a ``t3key_`` bearer token in one of several
+                          ``Authorization`` headers
 ``KeyInQueryString``      A key appears in the query string. Query strings end
                           up in access logs and ``Referer`` headers
 ``Unknown``               No key with this hash exists
@@ -94,6 +97,8 @@ Reason                    Cause
 ``SiteNotAllowed``        The request targets a site the key is not allowed for
 ``UserUnavailable``       The bound frontend or backend user is deleted,
                           disabled or outside its start and end time
+``Misconfigured``         Scopes, allowed IPs or sites are filled but contain
+                          no value, e.g. only commas
 ========================  ======================================================
 
 ..  _developer-api-key:
@@ -176,7 +181,10 @@ knows which scope an endpoint needs:
         return new JsonResponse(['error' => 'Forbidden'], 403);
     }
 
-A key without scopes has every scope. Scopes are compared exactly.
+A key without scopes has every scope. Scopes are compared exactly. Scopes,
+allowed IPs and sites are separated by line breaks or commas. A record whose
+field holds only separators is rejected (``Misconfigured``) instead of being
+treated as unrestricted.
 
 ..  _developer-side-effects:
 

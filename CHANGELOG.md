@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broken `Authorization` headers carrying a key are rejected.** `Bearer t3key_… garbage` is `Malformed`, and a `t3key_` bearer token in one of several `Authorization` headers is `Ambiguous`. Both used to count as no key, so `rejectInvalidKeys` did not answer them with `401`. Foreign bearer tokens still count as no key ([#20](https://github.com/maikschneider/api-key/issues/20)).
+
+- **Restrictions without a value no longer make a key unrestricted.** `ApiKeyCreator` and `apikey:create` split scopes, allowed IPs and sites the way authentication reads them and reject a given restriction that contains no value, such as `--scope=",,,"`. A record whose restriction field holds only separators, e.g. edited in the backend, is rejected as `InvalidReason::Misconfigured` ([#21](https://github.com/maikschneider/api-key/issues/21)).
+- **`0.0.0.0/0` allows every IPv4 client.** `GeneralUtility::cmpIP()` read an IPv4 prefix length of zero as an exact address, so such a key rejected every client. IPv4 and IPv6 ranges still never match the other address family ([#23](https://github.com/maikschneider/api-key/issues/23)).
 - **`apikey:create --expires` rejects every date that is not in the future.** `--expires=@0` and other dates at the Unix epoch used to create a key that never expires, because `0` means "no expiry" ([#24](https://github.com/maikschneider/api-key/issues/24)).
 
 ### Security
