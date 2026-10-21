@@ -48,6 +48,7 @@ final class ApiKeyAuthenticationRejectingTest extends AbstractMiddlewareTestCase
     {
         yield 'trailing garbage' => ['Bearer {key} garbage'];
         yield 'repeated header' => [['Bearer {key}', 'Bearer t3key_bad']];
+        yield 'key after a foreign bearer' => ['Bearer foreign, Bearer {key}'];
     }
 
     /**

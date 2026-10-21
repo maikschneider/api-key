@@ -84,6 +84,7 @@ Reason                    Cause
 ========================  ======================================================
 ``Malformed``             The ``X-API-Key`` header or a ``t3key_`` bearer token
                           is not a well-formed key, e.g. followed by more text
+                          or comma-joined with another token
 ``Ambiguous``             Two different keys, a repeated ``X-API-Key`` header,
                           or a ``t3key_`` bearer token in one of several
                           ``Authorization`` headers
