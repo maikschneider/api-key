@@ -29,3 +29,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Broken `Authorization` headers carrying a key are rejected.** `Bearer t3key_… garbage` is `Malformed`, and a `t3key_` bearer token in one of several `Authorization` headers is `Ambiguous`. Both used to count as no key, so `rejectInvalidKeys` did not answer them with `401`. Foreign bearer tokens still count as no key ([#20](https://github.com/maikschneider/api-key/issues/20)).
+
+- **`apikey:create --expires` rejects every date that is not in the future.** `--expires=@0` and other dates at the Unix epoch used to create a key that never expires, because `0` means "no expiry" ([#24](https://github.com/maikschneider/api-key/issues/24)).
