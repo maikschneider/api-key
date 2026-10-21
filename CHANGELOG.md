@@ -25,3 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Key storage.** Table `tx_apikey_key` holds keys on the root page with title, identifier prefix, optional frontend/backend user binding, creator, scopes, expiry, last use, allowed IPs and sites. Keys are revoked by hiding or deleting the record ([#2](https://github.com/maikschneider/api-key/issues/2)).
 - **Keys are stored as HMAC-SHA256 hashes.** The HMAC secret is derived from the TYPO3 `encryptionKey`, so a database leak alone does not let an attacker check guessed keys. Rotating the `encryptionKey` invalidates all keys ([#2](https://github.com/maikschneider/api-key/issues/2)).
 - **`last_used_at` is written at most once every five minutes per key**, so authenticated requests don't cause a database write each time ([#2](https://github.com/maikschneider/api-key/issues/2)).
+
+### Fixed
+
+- **`apikey:create --expires` rejects every date that is not in the future.** `--expires=@0` and other dates at the Unix epoch used to create a key that never expires, because `0` means "no expiry" ([#24](https://github.com/maikschneider/api-key/issues/24)).
