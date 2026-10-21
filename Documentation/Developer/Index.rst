@@ -83,8 +83,10 @@ Invalid reasons
 Reason                    Cause
 ========================  ======================================================
 ``Malformed``             The ``X-API-Key`` header or a ``t3key_`` bearer token
-                          is not a well-formed key
-``Ambiguous``             Two different keys, or a repeated ``X-API-Key`` header
+                          is not a well-formed key, e.g. followed by more text
+``Ambiguous``             Two different keys, a repeated ``X-API-Key`` header,
+                          or a ``t3key_`` bearer token in one of several
+                          ``Authorization`` headers
 ``KeyInQueryString``      A key appears in the query string. Query strings end
                           up in access logs and ``Referer`` headers
 ``Unknown``               No key with this hash exists

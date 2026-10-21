@@ -6,6 +6,7 @@ namespace MaikSchneider\ApiKey\Tests\Functional\Middleware;
 
 use MaikSchneider\ApiKey\Key\ApiKeyCreator;
 use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -38,6 +39,30 @@ final class ApiKeyAuthenticationRejectingTest extends AbstractMiddlewareTestCase
         self::assertSame('no-store', $response->getHeaderLine('Cache-Control'));
         self::assertSame(['error' => 'invalid_api_key'], json_decode((string)$response->getBody(), true));
         self::assertFalse($response->hasHeader('Set-Cookie'));
+    }
+
+    /**
+     * @return iterable<string, array{string|list<string>}>
+     */
+    public static function brokenAuthorizationHeaders(): iterable
+    {
+        yield 'trailing garbage' => ['Bearer {key} garbage'];
+        yield 'repeated header' => [['Bearer {key}', 'Bearer t3key_bad']];
+    }
+
+    /**
+     * @param string|list<string> $authorization
+     */
+    #[Test]
+    #[DataProvider('brokenAuthorizationHeaders')]
+    public function brokenAuthorizationHeaderWithKeyIsAnsweredWith401(string|array $authorization): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Valid');
+        $authorization = str_replace('{key}', $key->secret, $authorization);
+
+        $response = $this->request(['Authorization' => $authorization]);
+
+        self::assertSame(401, $response->getStatusCode());
     }
 
     #[Test]

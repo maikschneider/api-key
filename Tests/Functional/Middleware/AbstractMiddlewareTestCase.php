@@ -26,13 +26,15 @@ abstract class AbstractMiddlewareTestCase extends FunctionalTestCase
     }
 
     /**
-     * @param array<string, string> $headers
+     * @param array<string, string|list<string>> $headers
      */
     protected function request(array $headers): ResponseInterface
     {
         $request = new InternalRequest('http://localhost/');
-        foreach ($headers as $name => $value) {
-            $request = $request->withHeader($name, $value);
+        foreach ($headers as $name => $values) {
+            foreach ((array)$values as $value) {
+                $request = $request->withAddedHeader($name, $value);
+            }
         }
 
         return $this->executeFrontendSubRequest($request);

@@ -35,6 +35,16 @@ final class CredentialExtractorTest extends UnitTestCase
         yield 'malformed x-api-key' => [['X-API-Key' => 'secret'], [], [], InvalidReason::Malformed];
         yield 'empty x-api-key' => [['X-API-Key' => ''], [], [], InvalidReason::Malformed];
         yield 'malformed prefixed bearer' => [['Authorization' => 'Bearer t3key_short'], [], [], InvalidReason::Malformed];
+        yield 'prefixed bearer with trailing garbage' => [['Authorization' => 'Bearer ' . self::KEY . ' garbage'], [], [], InvalidReason::Malformed];
+        yield 'prefixed bearer with trailing comma' => [['Authorization' => 'Bearer ' . self::KEY . ','], [], [], InvalidReason::Malformed];
+        yield 'comma-joined prefixed bearers' => [['Authorization' => 'Bearer ' . self::KEY . ', Bearer ' . self::OTHER_KEY], [], [], InvalidReason::Malformed];
+        yield 'prefixed bearer with trailing spaces' => [['Authorization' => 'Bearer ' . self::KEY . '  '], [], [], self::KEY];
+        yield 'malformed redirected bearer' => [[], [], ['REDIRECT_HTTP_AUTHORIZATION' => 'Bearer ' . self::KEY . ' garbage'], InvalidReason::Malformed];
+        yield 'foreign bearer with trailing garbage' => [['Authorization' => 'Bearer foreign garbage'], [], [], null];
+        yield 'repeated authorization header' => [['Authorization' => ['Bearer ' . self::KEY, 'Bearer t3key_bad']], [], [], InvalidReason::Ambiguous];
+        yield 'repeated authorization header with the same key' => [['Authorization' => ['Bearer ' . self::KEY, 'Bearer ' . self::KEY]], [], [], InvalidReason::Ambiguous];
+        yield 'key next to basic auth' => [['Authorization' => ['Basic dXNlcjpwYXNz', 'Bearer ' . self::KEY]], [], [], InvalidReason::Ambiguous];
+        yield 'repeated foreign authorization header' => [['Authorization' => ['Bearer foreign', 'Basic dXNlcjpwYXNz']], [], [], null];
         yield 'different keys in both headers' => [['X-API-Key' => self::KEY, 'Authorization' => 'Bearer ' . self::OTHER_KEY], [], [], InvalidReason::Ambiguous];
         yield 'repeated x-api-key header' => [['X-API-Key' => [self::KEY, self::OTHER_KEY]], [], [], InvalidReason::Ambiguous];
         yield 'key in query string' => [[], ['api_key' => self::KEY], [], InvalidReason::KeyInQueryString];
