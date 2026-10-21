@@ -36,7 +36,7 @@ export TYPO3_DB_DBNAME="$dbName"
 export TYPO3_SERVER_TYPE=apache
 export TYPO3_PROJECT_NAME="EXT:api_key"
 export TYPO3_SETUP_ADMIN_USERNAME=admin
-export TYPO3_SETUP_ADMIN_PASSWORD='Password.1'
+export TYPO3_SETUP_ADMIN_PASSWORD='Passw0rd!'
 export TYPO3_SETUP_ADMIN_EMAIL=admin@example.com
 
 _progress "Setting up TYPO3 installation"
