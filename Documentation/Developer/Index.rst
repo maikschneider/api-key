@@ -36,6 +36,22 @@ service, :php:`\MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticatorInterface
         }
     }
 
+..  _developer-middleware:
+
+Reading the result in the frontend
+==================================
+
+In the frontend you don't need to call the service yourself. The
+:ref:`middleware <configuration-middleware>` attaches the result to the
+request, so middlewares placed after it and controllers read it:
+
+..  code-block:: php
+
+    use MaikSchneider\ApiKey\Middleware\ApiKeyAuthentication;
+
+    $result = ApiKeyAuthentication::getResult($request);
+    // or: $request->getAttribute('api_key')
+
 ..  _developer-outcomes:
 
 Three outcomes

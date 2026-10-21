@@ -47,6 +47,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
+			"MaikSchneider\\ApiKeyTest\\": "Tests/Functional/Middleware/Fixtures/Extensions/api_key_test/Classes",
 			"MaikSchneider\\ApiKey\\Tests\\": "Tests"
 		}
 	},

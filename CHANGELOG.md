@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Frontend middleware attaches the result as request attribute `api_key`.** It runs after site resolution and before frontend user authentication, never logs in a user and sets no cookie. With the extension setting `rejectInvalidKeys` it answers invalid keys with `401` and `WWW-Authenticate` itself ([#5](https://github.com/maikschneider/api-key/issues/5)).
+
 - **IP and site restrictions are enforced.** A key with allowed IPs only authenticates from a matching address or CIDR range, resolved behind trusted reverse proxies via `normalizedParams`; a key with sites only authenticates on requests whose `site` attribute is one of them. `ApiKey::hasScope()` lets consumers check scopes; a key without scopes has every scope ([#4](https://github.com/maikschneider/api-key/issues/4)).
 
 - **`ApiKeyAuthenticatorInterface::authenticate()` verifies the key of a request.** It reads `X-API-Key` and `Authorization: Bearer t3key_…` and returns an `AuthenticationResult` that is *not present*, *valid* with an `ApiKey` (uid, title, identifier, scopes, bound frontend or backend user, expiry) or *invalid* with an `InvalidReason`. Bearer tokens without the `t3key_` prefix count as not present, so other authenticators still get them. Keys in the query string, malformed, unknown, revoked and expired keys are invalid. No session, no cookie; rejections are logged without the key ([#1](https://github.com/maikschneider/api-key/issues/1)).

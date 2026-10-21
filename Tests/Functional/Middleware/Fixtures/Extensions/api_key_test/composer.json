@@ -1,0 +1,19 @@
+{
+	"name": "maikschneider/api-key-test",
+	"description": "Functional test fixture: echoes the api_key request attribute",
+	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
+	"require": {
+		"maikschneider/api-key": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"MaikSchneider\\ApiKeyTest\\": "Classes/"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "api_key_test"
+		}
+	}
+}
