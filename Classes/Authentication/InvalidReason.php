@@ -19,4 +19,5 @@ enum InvalidReason: string
     case IpNotAllowed = 'ip_not_allowed';
     case SiteNotAllowed = 'site_not_allowed';
     case UserUnavailable = 'user_unavailable';
+    case Misconfigured = 'misconfigured';
 }

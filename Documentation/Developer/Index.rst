@@ -96,6 +96,8 @@ Reason                    Cause
 ``SiteNotAllowed``        The request targets a site the key is not allowed for
 ``UserUnavailable``       The bound frontend or backend user is deleted,
                           disabled or outside its start and end time
+``Misconfigured``         Scopes, allowed IPs or sites are filled but contain
+                          no value, e.g. only commas
 ========================  ======================================================
 
 ..  _developer-api-key:
@@ -178,7 +180,10 @@ knows which scope an endpoint needs:
         return new JsonResponse(['error' => 'Forbidden'], 403);
     }
 
-A key without scopes has every scope. Scopes are compared exactly.
+A key without scopes has every scope. Scopes are compared exactly. Scopes,
+allowed IPs and sites are separated by line breaks or commas. A record whose
+field holds only separators is rejected (``Misconfigured``) instead of being
+treated as unrestricted.
 
 ..  _developer-side-effects:
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MaikSchneider\ApiKey\Key;
 
+use MaikSchneider\ApiKey\Authentication\ApiKey;
 use MaikSchneider\ApiKey\Exception\InvalidKeyDefinitionException;
 use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
 use TYPO3\CMS\Core\Context\Context;
@@ -46,9 +47,9 @@ final class ApiKeyCreator
         int $createdBy = 0,
     ): CreatedApiKey {
         $title = trim($title);
-        $scopes = $this->normalizeList($scopes);
-        $allowedIps = $this->normalizeList($allowedIps);
-        $sites = $this->normalizeList($sites);
+        $scopes = $this->normalizeList($scopes, 'Scopes');
+        $allowedIps = $this->normalizeList($allowedIps, 'Allowed IPs');
+        $sites = $this->normalizeList($sites, 'Sites');
 
         $this->validate($title, $feUser, $beUser, $expiresAt, $allowedIps, $sites, $createdBy);
 
@@ -147,12 +148,22 @@ final class ApiKeyCreator
     }
 
     /**
+     * Parses the values the way authentication reads them back. A restriction
+     * that is given but contains no value would otherwise store a key without
+     * that restriction.
+     *
      * @param list<string> $values
      * @return list<string>
+     * @throws InvalidKeyDefinitionException
      */
-    private function normalizeList(array $values): array
+    private function normalizeList(array $values, string $label): array
     {
-        return array_values(array_unique(array_filter(array_map(trim(...), $values), static fn (string $value): bool => $value !== '')));
+        $normalized = ApiKey::splitList(implode("\n", $values));
+        if ($values !== [] && $normalized === []) {
+            throw new InvalidKeyDefinitionException(sprintf('%s must contain at least one value when given.', $label), 1792512109);
+        }
+
+        return $normalized;
     }
 
     private function now(): int

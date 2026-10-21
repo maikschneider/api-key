@@ -50,6 +50,9 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
             return $this->reject($request, InvalidReason::Expired, $identifier);
         }
 
+        if (!$this->hasValidRestrictions($row)) {
+            return $this->reject($request, InvalidReason::Misconfigured, $identifier);
+        }
         if (!$this->isBoundUserAvailable($row)) {
             return $this->reject($request, InvalidReason::UserUnavailable, $identifier);
         }
@@ -65,6 +68,24 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
         $this->repository->touchLastUsed((int)$row['uid']);
 
         return AuthenticationResult::valid(ApiKey::fromRow($row));
+    }
+
+    /**
+     * A restriction field that is filled but contains no value, e.g. only
+     * commas, must not turn into an unrestricted key.
+     *
+     * @param array<string, mixed> $row
+     */
+    private function hasValidRestrictions(array $row): bool
+    {
+        foreach (['scopes', 'allowed_ips', 'sites'] as $field) {
+            $value = (string)($row[$field] ?? '');
+            if (trim($value) !== '' && ApiKey::splitList($value) === []) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
