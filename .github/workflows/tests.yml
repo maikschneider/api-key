@@ -107,7 +107,7 @@ jobs:
         run: ddev exec XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite Functional --coverage-clover coverage.functional.xml
 
       - name: Upload unit coverage to Codecov
-        uses: codecov/codecov-action@v5.5.4
+        uses: codecov/codecov-action@v5.5.5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.unit.xml
@@ -115,7 +115,7 @@ jobs:
           fail_ci_if_error: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
       - name: Upload functional coverage to Codecov
-        uses: codecov/codecov-action@v5.5.4
+        uses: codecov/codecov-action@v5.5.5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.functional.xml
