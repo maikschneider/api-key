@@ -68,6 +68,9 @@ final class CommandsTest extends FunctionalTestCase
             [['--title' => 'x', '--expires' => 'someday'], 'is not a valid date'],
             [['--title' => 'x', '--expires' => '-1 day'], 'must be in the future'],
             [['--title' => 'x', '--scope' => [',,,']], 'Scopes must contain at least one value'],
+            [['--title' => 'x', '--expires' => '@0'], 'must be in the future'],
+            [['--title' => 'x', '--expires' => '1970-01-01 00:00:00 UTC'], 'must be in the future'],
+            [['--title' => 'x', '--expires' => '@' . self::NOW], 'must be in the future'],
             [[], 'needs a title'],
         ];
         foreach ($cases as [$input, $message]) {
@@ -77,6 +80,16 @@ final class CommandsTest extends FunctionalTestCase
         }
 
         self::assertSame([], $this->get(ApiKeyRepository::class)->findAll());
+    }
+
+    #[Test]
+    public function createWithoutExpiryStoresAKeyThatNeverExpires(): void
+    {
+        $tester = new CommandTester($this->get(CreateCommand::class));
+        self::assertSame(Command::SUCCESS, $tester->execute(['--title' => 'No expiry']));
+
+        $row = $this->get(ApiKeyRepository::class)->findAll()[0];
+        self::assertSame(0, (int)$row['expires_at']);
     }
 
     #[Test]

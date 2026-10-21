@@ -99,9 +99,14 @@ final class CreateCommand extends Command
         if ($value === null) {
             return 0;
         }
-        $timestamp = is_string($value) ? strtotime($value, (int)$this->context->getPropertyFromAspect('date', 'timestamp')) : false;
+        $now = (int)$this->context->getPropertyFromAspect('date', 'timestamp');
+        $timestamp = is_string($value) ? strtotime($value, $now) : false;
         if ($timestamp === false) {
             throw new InvalidKeyDefinitionException(sprintf('--expires "%s" is not a valid date.', (string)$value), 1792512201);
+        }
+        // 0 means "never expires" to ApiKeyCreator, so an explicit past date must not reach it
+        if ($timestamp <= $now) {
+            throw new InvalidKeyDefinitionException('The expiry date must be in the future.', 1792512202);
         }
 
         return $timestamp;
