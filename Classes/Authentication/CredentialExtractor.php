@@ -85,7 +85,7 @@ final class CredentialExtractor
 
     private function isOwnBearerToken(string $value): bool
     {
-        return preg_match('/(?:^|,)\s*Bearer\s+' . preg_quote(KeyFormat::PREFIX, '/') . '/i', $value) === 1;
+        return preg_match('/(?:^|,)\s*(?i:Bearer)\s+' . preg_quote(KeyFormat::PREFIX, '/') . '/', $value) === 1;
     }
 
     private function validate(string $candidate): string|InvalidReason

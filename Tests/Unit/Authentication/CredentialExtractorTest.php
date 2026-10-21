@@ -40,6 +40,8 @@ final class CredentialExtractorTest extends UnitTestCase
         yield 'comma-joined prefixed bearers' => [['Authorization' => 'Bearer ' . self::KEY . ', Bearer ' . self::OTHER_KEY], [], [], InvalidReason::Malformed];
         yield 'prefixed bearer after a foreign bearer' => [['Authorization' => 'Bearer foreign, Bearer ' . self::KEY], [], [], InvalidReason::Malformed];
         yield 'comma-joined foreign bearers' => [['Authorization' => 'Bearer foreign, Bearer other'], [], [], null];
+        yield 'foreign bearer with the prefix in upper case' => [['Authorization' => 'Bearer T3KEY_foreign'], [], [], null];
+        yield 'foreign bearer with the prefix in upper case and x-api-key' => [['X-API-Key' => self::KEY, 'Authorization' => 'Bearer T3KEY_foreign'], [], [], self::KEY];
         yield 'prefixed bearer with trailing spaces' => [['Authorization' => 'Bearer ' . self::KEY . '  '], [], [], self::KEY];
         yield 'malformed redirected bearer' => [[], [], ['REDIRECT_HTTP_AUTHORIZATION' => 'Bearer ' . self::KEY . ' garbage'], InvalidReason::Malformed];
         yield 'foreign bearer with trailing garbage' => [['Authorization' => 'Bearer foreign garbage'], [], [], null];
