@@ -100,8 +100,10 @@ Create a key
     :type: string, repeatable
 
     Restricts the key to a scope. The extension does not interpret scopes; the
-    API that consumes the key defines them, e.g. ``articles:read``. A key
-    without scopes is unrestricted.
+    API that consumes the key defines them, e.g. ``articles:read``. Commas
+    separate several scopes in one value. A key without scopes is
+    unrestricted, but a given ``--scope`` without a value (``--scope=","``) is
+    rejected. The same applies to ``--allowed-ip`` and ``--site``.
 
 ..  confval:: --expires
     :name: apikey-create-expires

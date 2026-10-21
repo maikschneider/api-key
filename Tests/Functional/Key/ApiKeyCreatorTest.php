@@ -79,6 +79,21 @@ final class ApiKeyCreatorTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function listsAreSplitLikeAuthenticationReadsThem(): void
+    {
+        $createdKey = $this->get(ApiKeyCreator::class)->create(
+            title: 'Comma separated',
+            scopes: ['articles:read,articles:write', ',', 'pages:read'],
+            allowedIps: ['10.0.0.0/8, 192.0.2.1'],
+        );
+
+        $row = $this->get(ApiKeyRepository::class)->findByUid($createdKey->uid);
+        self::assertNotNull($row);
+        self::assertSame("articles:read\narticles:write\npages:read", $row['scopes']);
+        self::assertSame("10.0.0.0/8\n192.0.2.1", $row['allowed_ips']);
+    }
+
+    #[Test]
     public function backendUserBindingIsStored(): void
     {
         $createdKey = $this->get(ApiKeyCreator::class)->create('Backend', beUser: 1);
@@ -107,6 +122,12 @@ final class ApiKeyCreatorTest extends FunctionalTestCase
         yield 'ipv6 prefix too long' => [['allowedIps' => ['2001:db8::/129']], 1792512107];
         yield 'non-numeric prefix' => [['allowedIps' => ['10.0.0.0/x']], 1792512107];
         yield 'unknown site' => [['sites' => ['unknown']], 1792512108];
+        yield 'scopes of delimiters only' => [['scopes' => [',,,']], 1792512109];
+        yield 'empty scope' => [['scopes' => ['']], 1792512109];
+        yield 'blank scopes' => [['scopes' => ['  ', "\n"]], 1792512109];
+        yield 'empty allowed ip' => [['allowedIps' => ['']], 1792512109];
+        yield 'allowed ips of delimiters only' => [['allowedIps' => [',']], 1792512109];
+        yield 'empty site' => [['sites' => ['']], 1792512109];
     }
 
     /**
