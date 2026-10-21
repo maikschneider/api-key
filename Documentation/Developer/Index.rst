@@ -187,3 +187,31 @@ Authenticating a request creates no session, sends no cookie and does not
 update the user record. The only write is the key's ``last_used_at``, at most
 once every five minutes per key. Rejected keys are logged as warnings with the
 reason, the identifier and the client IP, never with the key itself.
+
+..  _developer-caching:
+
+Caching
+=======
+
+A response to an authenticated request depends on the key, so it must not be
+shared with other clients. For a valid key, the middleware disables the page
+cache for the request through the ``frontend.cache.instruction`` request
+attribute. TYPO3 then neither stores the page nor serves a cached one, and
+sends ``Cache-Control: private, no-store``.
+
+If you call the authenticator yourself, take care of caching yourself:
+
+*   In the frontend rendering chain, disable the page cache before the page is
+    rendered:
+
+    ..  code-block:: php
+
+        $cacheInstruction = $request->getAttribute('frontend.cache.instruction', new CacheInstruction());
+        $cacheInstruction->disableCache('EXT:my_extension: Authenticated with an API key');
+        $request = $request->withAttribute('frontend.cache.instruction', $cacheInstruction);
+
+*   Don't let a key-dependent response enter a response cache that other
+    clients share, or include the key uid in its cache identifier.
+*   Send ``Cache-Control: private, no-store`` or a ``Vary`` header that covers
+    ``X-API-Key`` and ``Authorization``, so reverse proxies and CDNs don't
+    store the response for everyone.
