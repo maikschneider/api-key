@@ -13,11 +13,15 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Frontend\Cache\CacheInstruction;
 
 /**
  * Authenticates the key of a frontend request once and attaches the
  * AuthenticationResult as request attribute "api_key". Does not log in users:
  * consumers map the bound identity to their own authorization model.
+ *
+ * Responses to authenticated requests depend on the key, so they must neither
+ * enter nor come from the shared page cache.
  */
 final class ApiKeyAuthentication implements MiddlewareInterface
 {
@@ -38,7 +42,12 @@ final class ApiKeyAuthentication implements MiddlewareInterface
             return $this->createUnauthorizedResponse();
         }
 
-        return $handler->handle($request->withAttribute(self::ATTRIBUTE, $result));
+        $request = $request->withAttribute(self::ATTRIBUTE, $result);
+        if ($result->isValid()) {
+            $request = $this->disablePageCache($request);
+        }
+
+        return $handler->handle($request);
     }
 
     public static function getResult(ServerRequestInterface $request): ?AuthenticationResult
@@ -46,6 +55,17 @@ final class ApiKeyAuthentication implements MiddlewareInterface
         $result = $request->getAttribute(self::ATTRIBUTE);
 
         return $result instanceof AuthenticationResult ? $result : null;
+    }
+
+    private function disablePageCache(ServerRequestInterface $request): ServerRequestInterface
+    {
+        $cacheInstruction = $request->getAttribute('frontend.cache.instruction');
+        if (!$cacheInstruction instanceof CacheInstruction) {
+            $cacheInstruction = new CacheInstruction();
+        }
+        $cacheInstruction->disableCache('EXT:api_key: Request is authenticated with an API key.');
+
+        return $request->withAttribute('frontend.cache.instruction', $cacheInstruction);
     }
 
     private function rejectsInvalidKeys(): bool

@@ -37,6 +37,18 @@ Sending keys
     URL-encoded keys and parameters that a later one of the same name
     overwrites.
 
+..  _security-caching:
+
+Caching
+-------
+
+The frontend middleware disables the TYPO3 page cache for requests with a
+valid key, so key-dependent content never reaches anonymous visitors or other
+keys (see :ref:`developer-caching`). A reverse proxy or CDN in front of TYPO3
+does not know about keys: let requests with an ``X-API-Key`` or
+``Authorization`` header bypass its cache, otherwise it may answer them with a
+page it cached for anonymous visitors.
+
 ..  _security-apache:
 
 Apache and the Authorization header

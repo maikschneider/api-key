@@ -21,6 +21,9 @@ final class EchoMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if ($request->getUri()->getPath() !== '/') {
+            return $handler->handle($request);
+        }
         $result = ApiKeyAuthentication::getResult($request);
 
         return new JsonResponse([
