@@ -59,6 +59,16 @@ Create a key
     :type: int
 
     Binds the key to a backend user. A key is bound to one user at most.
+    A bound user that is deleted, disabled or outside its start and end time
+    makes the key invalid.
+
+..  confval:: --created-by
+    :name: apikey-create-created-by
+    :type: int
+
+    Records a backend user as creator of the key, e.g. the person who
+    requested it. The creator is shown in the backend and by
+    ``apikey:list``, and does not affect authentication.
 
 ..  confval:: --scope
     :name: apikey-create-scope

@@ -20,6 +20,7 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
         private readonly CredentialExtractor $credentialExtractor,
         private readonly KeyHasher $keyHasher,
         private readonly ApiKeyRepository $repository,
+        private readonly BoundUserChecker $boundUserChecker,
         private readonly Context $context,
         private readonly LoggerInterface $logger,
     ) {
@@ -49,6 +50,9 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
             return $this->reject($request, InvalidReason::Expired, $identifier);
         }
 
+        if (!$this->isBoundUserAvailable($row)) {
+            return $this->reject($request, InvalidReason::UserUnavailable, $identifier);
+        }
         $allowedIps = ApiKey::splitList((string)($row['allowed_ips'] ?? ''));
         if ($allowedIps !== [] && !$this->isIpAllowed($request, $allowedIps)) {
             return $this->reject($request, InvalidReason::IpNotAllowed, $identifier);
@@ -61,6 +65,18 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
         $this->repository->touchLastUsed((int)$row['uid']);
 
         return AuthenticationResult::valid(ApiKey::fromRow($row));
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private function isBoundUserAvailable(array $row): bool
+    {
+        $feUser = (int)$row['fe_user'];
+        $beUser = (int)$row['be_user'];
+
+        return ($feUser === 0 || $this->boundUserChecker->isAvailable('fe_users', $feUser, $this->now()))
+            && ($beUser === 0 || $this->boundUserChecker->isAvailable('be_users', $beUser, $this->now()));
     }
 
     /**

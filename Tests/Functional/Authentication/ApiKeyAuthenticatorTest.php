@@ -7,6 +7,7 @@ namespace MaikSchneider\ApiKey\Tests\Functional\Authentication;
 use MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticator;
 use MaikSchneider\ApiKey\Authentication\ApiKeyAuthenticatorInterface;
 use MaikSchneider\ApiKey\Authentication\AuthenticationResult;
+use MaikSchneider\ApiKey\Authentication\BoundUserChecker;
 use MaikSchneider\ApiKey\Authentication\CredentialExtractor;
 use MaikSchneider\ApiKey\Authentication\InvalidReason;
 use MaikSchneider\ApiKey\Key\ApiKeyCreator;
@@ -243,6 +244,71 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         self::assertTrue($this->authenticate($this->requestWithKey($key->secret))->isValid());
     }
 
+    /**
+     * @return iterable<string, array{array<string, int>, bool}>
+     */
+    public static function boundUserStates(): iterable
+    {
+        yield 'active' => [[], true];
+        yield 'starts now' => [['starttime' => self::NOW], true];
+        yield 'ends later' => [['endtime' => self::NOW + 1], true];
+        yield 'disabled' => [['disable' => 1], false];
+        yield 'deleted' => [['deleted' => 1], false];
+        yield 'not started' => [['starttime' => self::NOW + 1], false];
+        yield 'ended' => [['endtime' => self::NOW], false];
+    }
+
+    /**
+     * @param array<string, int> $userFields
+     */
+    #[Test]
+    #[DataProvider('boundUserStates')]
+    public function boundFrontendUserMustBeAvailable(array $userFields, bool $valid): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Frontend', feUser: 1);
+        $this->updateUser('fe_users', 1, $userFields);
+
+        $result = $this->authenticate($this->requestWithKey($key->secret));
+
+        self::assertSame($valid ? null : InvalidReason::UserUnavailable, $result->getInvalidReason());
+    }
+
+    /**
+     * @param array<string, int> $userFields
+     */
+    #[Test]
+    #[DataProvider('boundUserStates')]
+    public function boundBackendUserMustBeAvailable(array $userFields, bool $valid): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Backend', beUser: 1);
+        $this->updateUser('be_users', 1, $userFields);
+
+        $result = $this->authenticate($this->requestWithKey($key->secret));
+
+        self::assertSame($valid ? null : InvalidReason::UserUnavailable, $result->getInvalidReason());
+        if ($valid) {
+            self::assertSame(1, $result->getApiKey()?->backendUserUid);
+        }
+    }
+
+    #[Test]
+    public function removedBoundUserMakesKeyInvalid(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Frontend', feUser: 1);
+        $this->getConnectionPool()->getConnectionForTable('fe_users')->delete('fe_users', ['uid' => 1]);
+
+        self::assertSame(InvalidReason::UserUnavailable, $this->authenticate($this->requestWithKey($key->secret))->getInvalidReason());
+    }
+
+    #[Test]
+    public function disabledCreatorDoesNotAffectTheKey(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Service', createdBy: 1);
+        $this->updateUser('be_users', 1, ['disable' => 1]);
+
+        self::assertTrue($this->authenticate($this->requestWithKey($key->secret))->isValid());
+    }
+
     #[Test]
     public function rejectionIsLoggedWithIdentifierButWithoutSecret(): void
     {
@@ -261,6 +327,7 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
             new CredentialExtractor(),
             new KeyHasher(),
             $this->get(ApiKeyRepository::class),
+            new BoundUserChecker($this->get(ConnectionPool::class)),
             $this->get(Context::class),
             $logger,
         );
@@ -311,6 +378,16 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         $this->get(ConnectionPool::class)
             ->getConnectionForTable(ApiKeyRepository::TABLE)
             ->update(ApiKeyRepository::TABLE, $fields, ['uid' => $key->uid]);
+    }
+
+    /**
+     * @param array<string, int> $fields
+     */
+    private function updateUser(string $table, int $uid, array $fields): void
+    {
+        if ($fields !== []) {
+            $this->getConnectionPool()->getConnectionForTable($table)->update($table, $fields, ['uid' => $uid]);
+        }
     }
 
     private function getLastUsed(CreatedApiKey $key): int

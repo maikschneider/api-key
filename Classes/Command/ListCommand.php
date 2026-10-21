@@ -33,12 +33,13 @@ final class ListCommand extends Command
 
         $now = (int)$this->context->getPropertyFromAspect('date', 'timestamp');
         $io->table(
-            ['UID', 'Identifier', 'Title', 'Identity', 'Scopes', 'Expires', 'Last used', 'Status'],
+            ['UID', 'Identifier', 'Title', 'Identity', 'Created by', 'Scopes', 'Expires', 'Last used', 'Status'],
             array_map(fn (array $row): array => [
                 (int)$row['uid'],
                 (string)$row['key_prefix'],
                 (string)$row['title'],
                 $this->formatIdentity($row),
+                (int)$row['created_by'] > 0 ? 'be_users:' . (int)$row['created_by'] : '-',
                 str_replace("\n", ', ', trim((string)($row['scopes'] ?? ''))) ?: 'all',
                 $this->formatDate((int)$row['expires_at'], 'never'),
                 $this->formatDate((int)$row['last_used_at'], '-'),
