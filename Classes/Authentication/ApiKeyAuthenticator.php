@@ -106,8 +106,30 @@ final class ApiKeyAuthenticator implements ApiKeyAuthenticatorInterface
     private function isIpAllowed(ServerRequestInterface $request, array $allowedIps): bool
     {
         $remoteAddress = $this->getRemoteAddress($request);
+        if ($remoteAddress === '') {
+            return false;
+        }
+        foreach ($allowedIps as $allowedIp) {
+            if ($this->matchesIp($remoteAddress, $allowedIp)) {
+                return true;
+            }
+        }
 
-        return $remoteAddress !== '' && GeneralUtility::cmpIP($remoteAddress, implode(',', $allowedIps));
+        return false;
+    }
+
+    /**
+     * GeneralUtility::cmpIP() treats an IPv4 prefix length of zero as an exact
+     * address, so 0.0.0.0/0 would match nothing but 0.0.0.0.
+     */
+    private function matchesIp(string $remoteAddress, string $allowedIp): bool
+    {
+        $parts = explode('/', $allowedIp, 2);
+        if (($parts[1] ?? null) === '0' && GeneralUtility::validIPv4($parts[0])) {
+            return GeneralUtility::validIPv4($remoteAddress);
+        }
+
+        return GeneralUtility::cmpIP($remoteAddress, $allowedIp);
     }
 
     /**
