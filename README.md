@@ -7,6 +7,7 @@
 [![Supported PHP versions](https://img.shields.io/packagist/dependency-v/maikschneider/api-key/php?logo=php)](https://packagist.org/packages/maikschneider/api-key)
 [![Tests](https://img.shields.io/github/actions/workflow/status/maikschneider/api-key/tests.yml?label=tests&logo=github)](https://github.com/maikschneider/api-key/actions/workflows/tests.yml)
 [![CGL](https://img.shields.io/github/actions/workflow/status/maikschneider/api-key/sca.yml?label=cgl&logo=github)](https://github.com/maikschneider/api-key/actions/workflows/sca.yml)
+[![Coverage](https://codecov.io/gh/maikschneider/api-key/graph/badge.svg)](https://codecov.io/gh/maikschneider/api-key)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE.md)
 
 </div>
