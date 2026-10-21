@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Keys are stored as HMAC-SHA256 hashes.** The HMAC secret is derived from the TYPO3 `encryptionKey`, so a database leak alone does not let an attacker check guessed keys. Rotating the `encryptionKey` invalidates all keys ([#2](https://github.com/maikschneider/api-key/issues/2)).
 - **`last_used_at` is written at most once every five minutes per key**, so authenticated requests don't cause a database write each time ([#2](https://github.com/maikschneider/api-key/issues/2)).
 
+### Fixed
+
+- **`apikey:create --expires` rejects every date that is not in the future.** `--expires=@0` and other dates at the Unix epoch used to create a key that never expires, because `0` means "no expiry" ([#24](https://github.com/maikschneider/api-key/issues/24)).
+
 ### Security
 
 - **Responses to authenticated requests no longer enter the page cache.** For a valid key, the middleware disables the page cache through the `frontend.cache.instruction` request attribute. Before, a cacheable page whose content depended on the key could be served from the cache to anonymous visitors or to another key. The documentation covers caching for consumers that call the authenticator themselves and for reverse proxies ([#19](https://github.com/maikschneider/api-key/issues/19)).
