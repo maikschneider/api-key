@@ -21,6 +21,31 @@ The prefix plus the next eight characters (``t3key_KhhNfTRL``) form the
 and identifies a key without revealing it. The full key is only shown once,
 when it is created. The database stores an HMAC hash of it.
 
+..  _usage-requests:
+
+Sending a key
+=============
+
+Send the key in one of two headers:
+
+..  code-block:: bash
+
+    curl -H 'X-API-Key: t3key_KhhNfTRL-5tLoriJVo5I-BQRJWiLD3GqlvEcPDPeHmg' \
+        https://example.com/api/articles
+
+    curl -H 'Authorization: Bearer t3key_KhhNfTRL-5tLoriJVo5I-BQRJWiLD3GqlvEcPDPeHmg' \
+        https://example.com/api/articles
+
+Prefer ``X-API-Key`` behind Apache, see :ref:`security-apache`. Never put a
+key in the query string; such requests are always rejected.
+
+In CI pipelines and scripts read the key from a secret variable instead of
+writing it into the script:
+
+..  code-block:: bash
+
+    curl --fail -H "X-API-Key: ${TYPO3_API_KEY}" https://example.com/api/articles
+
 ..  _usage-cli:
 
 Managing keys on the command line

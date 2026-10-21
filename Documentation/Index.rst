@@ -62,6 +62,14 @@ or cookies.
 
         Verifying keys in your own API, middleware or authentication service.
 
+    ..  card:: :ref:`Security <security>`
+
+        How keys are stored, sent, revoked and logged.
+
+    ..  card:: :ref:`Known problems <known-problems>`
+
+        Current limitations.
+
 ..  Table of Contents
 
 ..  toctree::
@@ -74,3 +82,5 @@ or cookies.
     Usage/Index
     Configuration/Index
     Developer/Index
+    Security/Index
+    KnownProblems/Index
