@@ -67,6 +67,7 @@ final class CommandsTest extends FunctionalTestCase
             [['--title' => 'x', '--created-by' => '99'], 'Backend user 99 does not exist'],
             [['--title' => 'x', '--expires' => 'someday'], 'is not a valid date'],
             [['--title' => 'x', '--expires' => '-1 day'], 'must be in the future'],
+            [['--title' => 'x', '--scope' => [',,,']], 'Scopes must contain at least one value'],
             [['--title' => 'x', '--expires' => '@0'], 'must be in the future'],
             [['--title' => 'x', '--expires' => '1970-01-01 00:00:00 UTC'], 'must be in the future'],
             [['--title' => 'x', '--expires' => '@' . self::NOW], 'must be in the future'],

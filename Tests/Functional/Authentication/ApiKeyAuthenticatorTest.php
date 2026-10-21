@@ -126,6 +126,53 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
         self::assertSame(InvalidReason::Revoked, $this->authenticate($this->requestWithKey($key->secret))->getInvalidReason());
     }
 
+    /**
+     * @return iterable<string, array{array<string, string>}>
+     */
+    public static function restrictionsWithoutValues(): iterable
+    {
+        yield 'scopes of commas' => [['scopes' => ',,,']];
+        yield 'scopes of commas and line breaks' => [['scopes' => " ,\n, "]];
+        yield 'allowed ips of commas' => [['allowed_ips' => ',']];
+        yield 'sites of commas' => [['sites' => ', ,']];
+    }
+
+    /**
+     * @param array<string, string> $fields
+     */
+    #[Test]
+    #[DataProvider('restrictionsWithoutValues')]
+    public function keyWithRestrictionWithoutValuesIsMisconfigured(array $fields): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Edited in the backend');
+        $this->updateKey($key, $fields);
+
+        self::assertSame(InvalidReason::Misconfigured, $this->authenticate($this->requestWithKey($key->secret))->getInvalidReason());
+    }
+
+    #[Test]
+    public function blankRestrictionsLeaveTheKeyUnrestricted(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Blank');
+        $this->updateKey($key, ['scopes' => " \n ", 'allowed_ips' => '', 'sites' => "\n"]);
+
+        $apiKey = $this->authenticate($this->requestWithKey($key->secret))->getApiKey();
+        self::assertNotNull($apiKey);
+        self::assertTrue($apiKey->hasScope('admin'));
+    }
+
+    #[Test]
+    public function commaSeparatedScopesRoundTripThroughAuthentication(): void
+    {
+        $key = $this->get(ApiKeyCreator::class)->create('Scoped', scopes: ['articles:read,articles:write']);
+
+        $apiKey = $this->authenticate($this->requestWithKey($key->secret))->getApiKey();
+        self::assertNotNull($apiKey);
+        self::assertSame(['articles:read', 'articles:write'], $apiKey->scopes);
+        self::assertTrue($apiKey->hasScope('articles:write'));
+        self::assertFalse($apiKey->hasScope('admin'));
+    }
+
     #[Test]
     public function deletedKeyIsRevoked(): void
     {
@@ -380,7 +427,7 @@ final class ApiKeyAuthenticatorTest extends FunctionalTestCase
     }
 
     /**
-     * @param array<string, int> $fields
+     * @param array<string, int|string> $fields
      */
     private function updateKey(CreatedApiKey $key, array $fields): void
     {
