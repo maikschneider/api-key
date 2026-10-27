@@ -16,8 +16,8 @@
                interlink-shortcode="maikschneider/api-key"
     />
     <project title="API_KEY"
-             release="main"
-             version="main"
+             release="1.0.0"
+             version="1.0.0"
              copyright="since 2026 by Maik Schneider &amp; Contributors"
     />
     <inventory id="t3coreapi"

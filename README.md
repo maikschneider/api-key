@@ -19,9 +19,6 @@ curl -H 'X-API-Key: t3key_…' https://example.com/api/articles
 curl -H 'Authorization: Bearer t3key_…' https://example.com/api/articles
 ```
 
-> [!WARNING]
-> This extension is under development and not released yet.
-
 ## ✨ Features
 
 * `X-API-Key` and `Authorization: Bearer` headers. Bearer tokens without the `t3key_` prefix are left to other authenticators
