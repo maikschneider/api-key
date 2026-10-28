@@ -43,7 +43,7 @@ vendor/bin/typo3 apikey:revoke t3key_KhhNfTRL
 
 The key is printed once and cannot be recovered.
 
-On TYPO3 v14, administrators can also create, list and revoke keys in the backend module **Administration › Integrations › API Keys**.
+Administrators can also create keys in the backend: saving a new key record shows the key once. On TYPO3 v14 the module **Administration › Integrations › API Keys** lists and revokes them.
 
 ## 📙 Documentation
 

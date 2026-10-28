@@ -9,10 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Backend module "API Keys"** under Administration › Integrations (TYPO3 v14). Administrators list keys, create one and see its secret once with a copy button, and revoke keys ([#9](https://github.com/maikschneider/api-key/issues/9)).
+- **Create keys in the backend.** Saving a new key record generates the key and shows it once in the record form, with a copy button. Key records follow the same rules as `apikey:create`; a record that breaks one is not saved ([#9](https://github.com/maikschneider/api-key/issues/9)).
+- **Backend module "API Keys"** under Administration › Integrations (TYPO3 v14). It lists keys, opens the record form to create or edit one, and revokes keys ([#9](https://github.com/maikschneider/api-key/issues/9)).
+
+### Changed
+
+- The frontend user of a key is picked with the record browser instead of a select box listing every frontend user.
 
 ### Fixed
 
+- Key records created in the backend got no hash and never authenticated.
 - Ship `Configuration/` in the TER package. The `config` packaging exclusion matched it as a case-insensitive prefix.
 
 ## [1.0.0] - 2026-10-21

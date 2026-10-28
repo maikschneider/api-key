@@ -12,9 +12,6 @@
 			<trans-unit id="mlang_labels_tabdescr">
 				<source>Create API keys for scripts, cron jobs and server-to-server integrations. The key is shown once after creation; only its hash is stored.</source>
 			</trans-unit>
-			<trans-unit id="module.back">
-				<source>Back</source>
-			</trans-unit>
 			<trans-unit id="module.new.title">
 				<source>Create API key</source>
 			</trans-unit>
@@ -83,69 +80,6 @@
 			</trans-unit>
 			<trans-unit id="module.revoke.success">
 				<source>Revoked API key "%s" (%s).</source>
-			</trans-unit>
-			<trans-unit id="module.field.title">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="module.field.title.description">
-				<source>A label that tells you where the key is used, e.g. "CI deploy script".</source>
-			</trans-unit>
-			<trans-unit id="module.field.identity">
-				<source>Identity</source>
-			</trans-unit>
-			<trans-unit id="module.field.identity.description">
-				<source>A service key acts without a user. A key bound to a user stops working while that user is deleted or disabled.</source>
-			</trans-unit>
-			<trans-unit id="module.field.fe_user">
-				<source>Frontend user uid</source>
-			</trans-unit>
-			<trans-unit id="module.field.be_user">
-				<source>Backend user</source>
-			</trans-unit>
-			<trans-unit id="module.field.scopes">
-				<source>Scopes</source>
-			</trans-unit>
-			<trans-unit id="module.field.scopes.description">
-				<source>One scope per line. Leave empty to allow everything.</source>
-			</trans-unit>
-			<trans-unit id="module.field.expires_at">
-				<source>Expires at</source>
-			</trans-unit>
-			<trans-unit id="module.field.expires_at.description">
-				<source>The key stops working at the start of this day. Leave empty for a key that never expires.</source>
-			</trans-unit>
-			<trans-unit id="module.field.allowed_ips">
-				<source>Allowed IP addresses</source>
-			</trans-unit>
-			<trans-unit id="module.field.allowed_ips.description">
-				<source>One IP address or CIDR range per line. Leave empty to allow any address.</source>
-			</trans-unit>
-			<trans-unit id="module.field.sites">
-				<source>Sites</source>
-			</trans-unit>
-			<trans-unit id="module.field.sites.description">
-				<source>Select none to allow every site.</source>
-			</trans-unit>
-			<trans-unit id="module.create.submit">
-				<source>Create key</source>
-			</trans-unit>
-			<trans-unit id="module.create.error">
-				<source>The key was not created</source>
-			</trans-unit>
-			<trans-unit id="module.created.title">
-				<source>Key created</source>
-			</trans-unit>
-			<trans-unit id="module.created.message">
-				<source>Copy the key now and store it somewhere safe. It is not shown again and cannot be recovered; only its hash is stored.</source>
-			</trans-unit>
-			<trans-unit id="module.created.key">
-				<source>API key</source>
-			</trans-unit>
-			<trans-unit id="module.created.copy">
-				<source>Copy API key</source>
-			</trans-unit>
-			<trans-unit id="module.created.usage">
-				<source>Send it in the X-API-Key header or as bearer token, for example:</source>
 			</trans-unit>
 		</body>
 	</file>

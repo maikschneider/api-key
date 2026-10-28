@@ -9,6 +9,10 @@
 <f:section name="Content">
     <h1><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab" /></h1>
 
+    <f:for each="{createdKeys}" as="createdKey">
+        <f:render partial="CreatedKey" arguments="{createdKey}" />
+    </f:for>
+
     <f:if condition="{keys}">
         <f:then>
             <div class="table-fit">

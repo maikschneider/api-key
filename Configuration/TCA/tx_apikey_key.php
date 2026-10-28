@@ -37,9 +37,8 @@ return [
             'label' => $ll . '.key_prefix',
             'description' => $ll . '.key_prefix.description',
             'config' => [
-                'type' => 'input',
-                'size' => 20,
-                'readOnly' => true,
+                'type' => 'user',
+                'renderType' => 'apiKeyIdentifier',
             ],
         ],
         'key_hash' => [
@@ -50,12 +49,10 @@ return [
         'fe_user' => [
             'label' => $ll . '.fe_user',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'fe_users',
-                'items' => [
-                    ['label' => '', 'value' => 0],
-                ],
+                'type' => 'group',
+                'allowed' => 'fe_users',
+                'size' => 1,
+                'maxitems' => 1,
                 'default' => 0,
             ],
         ],
@@ -73,6 +70,7 @@ return [
         ],
         'created_by' => [
             'label' => $ll . '.created_by',
+            'displayCond' => 'REC:NEW:false',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -102,6 +100,7 @@ return [
         ],
         'last_used_at' => [
             'label' => $ll . '.last_used_at',
+            'displayCond' => 'REC:NEW:false',
             'config' => [
                 'type' => 'datetime',
                 'default' => 0,

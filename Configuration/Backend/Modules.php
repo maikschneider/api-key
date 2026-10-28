@@ -23,15 +23,6 @@ return [
             '_default' => [
                 'target' => ApiKeyModuleController::class . '::indexAction',
             ],
-            'new' => [
-                'path' => '/new',
-                'target' => ApiKeyModuleController::class . '::newAction',
-            ],
-            'create' => [
-                'path' => '/create',
-                'target' => ApiKeyModuleController::class . '::createAction',
-                'methods' => ['POST'],
-            ],
             'revoke' => [
                 'path' => '/revoke',
                 'target' => ApiKeyModuleController::class . '::revokeAction',

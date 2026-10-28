@@ -158,20 +158,27 @@ available for auditing.
 Managing keys in the backend
 ============================
 
-On TYPO3 v14, administrators find the module :guilabel:`Administration >
-Integrations > API Keys`. It lists all keys with their identifier, identity,
-scopes, expiry, last use and status.
+Administrators create and edit keys in the regular record form, like any
+other record on the root page (:guilabel:`Content > Records`, page 0).
+The key is generated when the record is saved. The form then shows it once,
+with a button that copies it to the clipboard. Only its hash is stored, so
+reloading the form or opening it again does not show it any more.
 
-:guilabel:`Create API key` takes the same values as :ref:`apikey:create
-<usage-cli-create>`. The key is created on the server and shown once on the
-next page, with a button that copies it to the clipboard. Leaving that page
-loses the key; only its hash is stored.
+The same rules apply as for :ref:`apikey:create <usage-cli-create>`. A
+record that breaks one, for example an invalid IP range or a key bound to a
+frontend and a backend user at once, is not saved, and the error is shown
+above the form.
 
-The edit button opens the record in the regular editing form, where title,
-user binding and restrictions can be changed later. The revoke button hides
-the record, like :ref:`apikey:revoke <usage-cli-revoke>`.
+On TYPO3 v14 the module :guilabel:`Administration > Integrations > API
+Keys` lists all keys with their identifier, identity, scopes, expiry, last
+use and status. :guilabel:`Create API key` and the edit button open the
+record form. The revoke button hides the record, like
+:ref:`apikey:revoke <usage-cli-revoke>`. A key that was saved with
+:guilabel:`Save and close` is shown once at the top of the module instead.
 
-On TYPO3 v13, use the console commands.
+Until the key is shown, it is kept in the backend user session, encrypted
+with a key derived from the session id. The session table only stores a hash
+of that id, so the database alone does not reveal it.
 
 ..  _usage-secret-scanning:
 
