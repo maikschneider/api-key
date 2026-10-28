@@ -34,10 +34,11 @@ final class ApiKeyModuleControllerTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+        // Skipping before parent::setUp() breaks the testing framework's tearDown().
         if (!class_exists(ComponentFactory::class)) {
             self::markTestSkipped('The backend module requires TYPO3 v14.');
         }
-        parent::setUp();
         $this->importCSVDataSet(__DIR__ . '/Fixtures/be_users.csv');
         $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($this->setUpBackendUser(1));
         $this->get(Context::class)->setAspect('date', new DateTimeAspect(new \DateTimeImmutable('@' . self::NOW)));
