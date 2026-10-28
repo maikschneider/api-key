@@ -13,7 +13,7 @@ return [
         '.idea',
         'bin',
         'build',
-        'config',
+        'config/',
         'Documentation-GENERATED-temp',
         'Plans',
         'public',

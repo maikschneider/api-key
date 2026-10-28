@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ship `Configuration/` in the TER package. The `config` packaging exclusion matched it as a case-insensitive prefix.
+
 ## [1.0.0] - 2026-10-21
 
 ### Added
