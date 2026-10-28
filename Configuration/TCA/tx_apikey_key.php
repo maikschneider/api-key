@@ -46,6 +46,14 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'identity' => [
+            'label' => $ll . '.identity',
+            'description' => $ll . '.identity.description',
+            'config' => [
+                'type' => 'user',
+                'renderType' => 'apiKeyIdentity',
+            ],
+        ],
         'fe_user' => [
             'label' => $ll . '.fe_user',
             'config' => [
@@ -141,7 +149,7 @@ return [
     'palettes' => [
         'identity' => [
             'label' => $ll . '.palettes.identity',
-            'showitem' => 'fe_user, be_user, --linebreak--, created_by',
+            'showitem' => 'identity, --linebreak--, fe_user, be_user, --linebreak--, created_by',
         ],
     ],
 ];

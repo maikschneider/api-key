@@ -94,6 +94,62 @@ final class ApiKeyDataHandlerHookTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function identityClearsTheOtherUserField(): void
+    {
+        $dataHandler = $this->process(['NEW1' => [
+            'pid' => 0,
+            'title' => 'CI deploy',
+            'identity' => 'be_user',
+            'fe_user' => 'fe_users_1',
+            'be_user' => 2,
+        ]]);
+
+        self::assertSame([], $dataHandler->errorLog);
+        $row = $this->get(ApiKeyRepository::class)->findByUid((int)$dataHandler->substNEWwithIDs['NEW1']);
+        self::assertSame(0, (int)($row['fe_user'] ?? -1));
+        self::assertSame(2, (int)($row['be_user'] ?? -1));
+    }
+
+    #[Test]
+    public function serviceIdentityUnbindsAKey(): void
+    {
+        $createdKey = $this->get(ApiKeyCreator::class)->create('CI deploy', feUser: 1);
+
+        $dataHandler = $this->process([$createdKey->uid => ['identity' => 'service', 'fe_user' => 'fe_users_1']]);
+
+        self::assertSame([], $dataHandler->errorLog);
+        self::assertSame(0, (int)($this->get(ApiKeyRepository::class)->findByUid($createdKey->uid)['fe_user'] ?? -1));
+    }
+
+    #[Test]
+    public function userIdentityNeedsAUser(): void
+    {
+        $createdKey = $this->get(ApiKeyCreator::class)->create('CI deploy', feUser: 1);
+
+        $dataHandler = $this->process([
+            'NEW1' => ['pid' => 0, 'title' => 'New', 'identity' => 'fe_user', 'fe_user' => ''],
+            $createdKey->uid => ['title' => 'Renamed', 'identity' => 'be_user', 'be_user' => 0],
+        ]);
+
+        $errors = implode("\n", $dataHandler->errorLog);
+        self::assertStringContainsString('Select the frontend user to bind the key to.', $errors);
+        self::assertStringContainsString('Select the backend user to bind the key to.', $errors);
+        $rows = $this->get(ApiKeyRepository::class)->findAll();
+        self::assertCount(1, $rows);
+        self::assertSame('CI deploy', $rows[0]['title']);
+        self::assertSame(1, (int)$rows[0]['fe_user']);
+    }
+
+    #[Test]
+    public function unknownIdentityIsRejected(): void
+    {
+        $dataHandler = $this->process(['NEW1' => ['pid' => 0, 'title' => 'CI deploy', 'identity' => 'admin']]);
+
+        self::assertStringContainsString('"admin" is not a valid identity.', implode("\n", $dataHandler->errorLog));
+        self::assertSame([], $this->get(ApiKeyRepository::class)->findAll());
+    }
+
+    #[Test]
     public function invalidUpdateLeavesTheRecordUnchanged(): void
     {
         $createdKey = $this->get(ApiKeyCreator::class)->create('CI deploy', allowedIps: ['10.0.0.0/8']);

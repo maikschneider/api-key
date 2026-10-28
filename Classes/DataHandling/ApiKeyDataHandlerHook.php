@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MaikSchneider\ApiKey\DataHandling;
 
 use MaikSchneider\ApiKey\Exception\InvalidKeyDefinitionException;
+use MaikSchneider\ApiKey\Key\Identity;
 use MaikSchneider\ApiKey\Key\KeyDefinitionValidator;
 use MaikSchneider\ApiKey\Key\KeyFormat;
 use MaikSchneider\ApiKey\Key\KeyGenerator;
@@ -60,7 +61,23 @@ final class ApiKeyDataHandlerHook
         foreach (self::PROTECTED_FIELDS as $field) {
             unset($incomingFieldArray[$field]);
         }
-        if (MathUtility::canBeInterpretedAsInteger($id)) {
+        $isNew = !MathUtility::canBeInterpretedAsInteger($id);
+        if (array_key_exists('identity', $incomingFieldArray)) {
+            $identity = $incomingFieldArray['identity'];
+            unset($incomingFieldArray['identity']);
+            try {
+                $incomingFieldArray = $this->applyIdentity(
+                    is_string($identity) ? $identity : '',
+                    $incomingFieldArray,
+                    $isNew ? [] : ($this->repository->findByUid((int)$id) ?? [])
+                );
+            } catch (InvalidKeyDefinitionException $exception) {
+                $this->logRejection($dataHandler, $isNew ? SystemLogDatabaseAction::INSERT : SystemLogDatabaseAction::UPDATE, $isNew ? 0 : (int)$id, $exception);
+                $incomingFieldArray = null;
+                return;
+            }
+        }
+        if (!$isNew) {
             return;
         }
 
@@ -123,6 +140,31 @@ final class ApiKeyDataHandlerHook
         if ($uid > 0 && !$this->secretStore->put($uid, $secret)) {
             $this->logger->warning('API key {uid} was created without a backend session, its secret cannot be shown.', ['uid' => $uid]);
         }
+    }
+
+    /**
+     * Clears the user field that does not belong to the selected identity, so
+     * switching a key from one user type to another needs no second edit.
+     *
+     * @param array<string, mixed> $incomingFieldArray
+     * @param array<string, mixed> $currentRecord empty for a new record
+     * @return array<string, mixed>
+     * @throws InvalidKeyDefinitionException
+     */
+    private function applyIdentity(string $identity, array $incomingFieldArray, array $currentRecord): array
+    {
+        if (Identity::tryFrom($identity) === null) {
+            throw new InvalidKeyDefinitionException(sprintf('"%s" is not a valid identity.', $identity), 1792512110);
+        }
+        foreach (['fe_user' => 'frontend user', 'be_user' => 'backend user'] as $field => $label) {
+            if ($field !== $identity) {
+                $incomingFieldArray[$field] = 0;
+            } elseif ($this->toUid($incomingFieldArray[$field] ?? $currentRecord[$field] ?? 0) === 0) {
+                throw new InvalidKeyDefinitionException(sprintf('Select the %s to bind the key to.', $label), 1792512111);
+            }
+        }
+
+        return $incomingFieldArray;
     }
 
     private function logRejection(DataHandler $dataHandler, int $action, int $uid, InvalidKeyDefinitionException $exception): void

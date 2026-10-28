@@ -164,6 +164,10 @@ The key is generated when the record is saved. The form then shows it once,
 with a button that copies it to the clipboard. Only its hash is stored, so
 reloading the form or opening it again does not show it any more.
 
+:guilabel:`Bound to` selects whether the key is a service key or bound to a
+frontend or backend user, and shows only the matching user field. Switching
+it clears the binding of the other user type when the record is saved.
+
 The same rules apply as for :ref:`apikey:create <usage-cli-create>`. A
 record that breaks one, for example an invalid IP range or a key bound to a
 frontend and a backend user at once, is not saved, and the error is shown

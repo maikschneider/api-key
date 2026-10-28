@@ -15,6 +15,21 @@
 			<trans-unit id="tx_apikey_key.key_prefix.description">
 				<source>The first characters of the key. Safe to show and log; the full key is only shown once at creation.</source>
 			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity">
+				<source>Bound to</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.description">
+				<source>A service key acts without a user. A key bound to a user stops working while that user is deleted or disabled.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.service">
+				<source>Nobody (service key)</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.fe_user">
+				<source>Frontend user</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.be_user">
+				<source>Backend user</source>
+			</trans-unit>
 			<trans-unit id="tx_apikey_key.fe_user">
 				<source>Frontend user</source>
 			</trans-unit>

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The frontend user of a key is picked with the record browser instead of a select box listing every frontend user.
+- The record form has a "Bound to" selection (service key, frontend user, backend user) that shows only the matching user field.
 
 ### Fixed
 
