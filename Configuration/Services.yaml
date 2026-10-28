@@ -6,6 +6,7 @@ services:
 
   MaikSchneider\ApiKey\:
     resource: '../Classes/*'
+    exclude: '../Classes/Controller/*'
 
   MaikSchneider\ApiKey\Repository\ApiKeyRepository:
     public: true

@@ -1,0 +1,92 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <h1><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.new.title" /></h1>
+
+    <form method="post" action="{createUrl}">
+        <fieldset class="form-section">
+            <div class="form-group">
+                <label class="form-label" for="api-key-title"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.title" /></label>
+                <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.title.description" /></div>
+                <input type="text" class="form-control" id="api-key-title" name="key[title]" value="{values.title}" maxlength="255" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="api-key-identity"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.identity" /></label>
+                <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.identity.description" /></div>
+                <select class="form-select" id="api-key-identity" name="key[identity]">
+                    <f:for each="{0: 'service', 1: 'fe_user', 2: 'be_user'}" as="identity">
+                        <option value="{identity}" {f:if(condition: '{values.identity} == {identity}', then: 'selected')}><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.identity.{identity}" /></option>
+                    </f:for>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="form-label" for="api-key-fe-user"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.fe_user" /></label>
+                    <input type="number" min="1" class="form-control" id="api-key-fe-user" name="key[fe_user]" value="{values.fe_user}" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label" for="api-key-be-user"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.be_user" /></label>
+                    <select class="form-select" id="api-key-be-user" name="key[be_user]">
+                        <option value=""></option>
+                        <f:for each="{backendUsers}" as="label" key="uid">
+                            <option value="{uid}" {f:if(condition: '{values.be_user} == {uid}', then: 'selected')}>{label}</option>
+                        </f:for>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+            <div class="form-group">
+                <label class="form-label" for="api-key-scopes"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.scopes" /></label>
+                <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.scopes.description" /></div>
+                <textarea class="form-control" id="api-key-scopes" name="key[scopes]" rows="3">{values.scopes}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="api-key-expires-at"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.expires_at" /></label>
+                <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.expires_at.description" /></div>
+                <input type="date" class="form-control" id="api-key-expires-at" name="key[expires_at]" value="{values.expires_at}" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="api-key-allowed-ips"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.allowed_ips" /></label>
+                <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.allowed_ips.description" /></div>
+                <textarea class="form-control" id="api-key-allowed-ips" name="key[allowed_ips]" rows="3">{values.allowed_ips}</textarea>
+            </div>
+
+            <f:if condition="{sites}">
+                <div class="form-group">
+                    <div class="form-label"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.sites" /></div>
+                    <div class="form-description"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.field.sites.description" /></div>
+                    <f:for each="{sites}" as="site" iteration="iterator">
+                        <div class="form-check">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="api-key-site-{iterator.index}"
+                                name="key[sites][]"
+                                value="{site.identifier}"
+                                {f:if(condition: site.checked, then: 'checked')}
+                            />
+                            <label class="form-check-label" for="api-key-site-{iterator.index}">{site.identifier}</label>
+                        </div>
+                    </f:for>
+                </div>
+            </f:if>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary">
+            <f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.create.submit" />
+        </button>
+    </form>
+</f:section>
+
+</html>

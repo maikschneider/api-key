@@ -153,6 +153,26 @@ Revoke a key
 Takes the identifier or the uid. Revoking hides the record, so it stays
 available for auditing.
 
+..  _usage-backend-module:
+
+Managing keys in the backend
+============================
+
+On TYPO3 v14, administrators find the module :guilabel:`Administration >
+Integrations > API Keys`. It lists all keys with their identifier, identity,
+scopes, expiry, last use and status.
+
+:guilabel:`Create API key` takes the same values as :ref:`apikey:create
+<usage-cli-create>`. The key is created on the server and shown once on the
+next page, with a button that copies it to the clipboard. Leaving that page
+loses the key; only its hash is stored.
+
+The edit button opens the record in the regular editing form, where title,
+user binding and restrictions can be changed later. The revoke button hides
+the record, like :ref:`apikey:revoke <usage-cli-revoke>`.
+
+On TYPO3 v13, use the console commands.
+
 ..  _usage-secret-scanning:
 
 Secret scanning

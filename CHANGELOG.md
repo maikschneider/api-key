@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Backend module "API Keys"** under Administration › Integrations (TYPO3 v14). Administrators list keys, create one and see its secret once with a copy button, and revoke keys ([#9](https://github.com/maikschneider/api-key/issues/9)).
+
 ### Fixed
 
 - Ship `Configuration/` in the TER package. The `config` packaging exclusion matched it as a case-insensitive prefix.

@@ -1,0 +1,108 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <h1><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab" /></h1>
+
+    <f:if condition="{keys}">
+        <f:then>
+            <div class="table-fit">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.title" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.identifier" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.identity" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.scopes" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.expires" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.lastUsed" /></th>
+                            <th><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.column.status" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <f:for each="{keys}" as="key">
+                            <tr>
+                                <td><a href="{key.editUrl}">{key.title}</a></td>
+                                <td><code>{key.key_prefix}</code></td>
+                                <td>
+                                    <f:if condition="{key.fe_user}">
+                                        <f:then><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.identity.fe_user" /> {key.fe_user}</f:then>
+                                        <f:else if="{key.be_user}"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.identity.be_user" /> {key.be_user}</f:else>
+                                        <f:else><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.identity.service" /></f:else>
+                                    </f:if>
+                                </td>
+                                <td>
+                                    <f:if condition="{key.scopeList}">
+                                        <f:then><f:for each="{key.scopeList}" as="scope"><span class="badge badge-default">{scope}</span> </f:for></f:then>
+                                        <f:else><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.scopes.all" /></f:else>
+                                    </f:if>
+                                </td>
+                                <td>
+                                    <f:if condition="{key.expires_at}">
+                                        <f:then><f:format.date format="Y-m-d H:i">@{key.expires_at}</f:format.date></f:then>
+                                        <f:else><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.never" /></f:else>
+                                    </f:if>
+                                </td>
+                                <td>
+                                    <f:if condition="{key.last_used_at}">
+                                        <f:then><f:format.date format="Y-m-d H:i">@{key.last_used_at}</f:format.date></f:then>
+                                        <f:else>-</f:else>
+                                    </f:if>
+                                </td>
+                                <td>
+                                    <f:switch expression="{key.status}">
+                                        <f:case value="active"><span class="badge badge-success"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.status.active" /></span></f:case>
+                                        <f:case value="expired"><span class="badge badge-warning"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.status.expired" /></span></f:case>
+                                        <f:defaultCase><span class="badge badge-danger"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.status.revoked" /></span></f:defaultCase>
+                                    </f:switch>
+                                </td>
+                                <td class="col-control nowrap">
+                                    <div class="btn-group">
+                                        <a href="{key.editUrl}" class="btn btn-default" title="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.edit')}">
+                                            <core:icon identifier="actions-open" size="small" />
+                                        </a>
+                                        <f:if condition="{key.status} != 'revoked'">
+                                            <button
+                                                type="submit"
+                                                form="api-key-revoke-{key.uid}"
+                                                class="btn btn-default t3js-modal-trigger"
+                                                title="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.revoke')}"
+                                                data-severity="warning"
+                                                data-title="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.revoke.confirm.title')}"
+                                                data-content="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.revoke.confirm.message')}"
+                                                data-button-ok-text="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.revoke')}"
+                                            >
+                                                <core:icon identifier="actions-edit-hide" size="small" />
+                                            </button>
+                                        </f:if>
+                                    </div>
+                                    <f:if condition="{key.status} != 'revoked'">
+                                        <form id="api-key-revoke-{key.uid}" method="post" action="{revokeUrl}">
+                                            <input type="hidden" name="uid" value="{key.uid}" />
+                                        </form>
+                                    </f:if>
+                                </td>
+                            </tr>
+                        </f:for>
+                    </tbody>
+                </table>
+            </div>
+        </f:then>
+        <f:else>
+            <f:be.infobox
+                state="-1"
+                title="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.empty.title')}"
+            >
+                <f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.empty.message" />
+            </f:be.infobox>
+        </f:else>
+    </f:if>
+</f:section>
+
+</html>

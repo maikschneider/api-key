@@ -1,0 +1,34 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <h1><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.created.title" /></h1>
+
+    <f:be.infobox state="1" title="{title} ({createdKey.identifier})">
+        <f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.created.message" />
+    </f:be.infobox>
+
+    <div class="form-group">
+        <label class="form-label" for="api-key-secret"><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.created.key" /></label>
+        <div class="input-group">
+            <input type="text" class="form-control font-monospace" id="api-key-secret" value="{createdKey.secret}" readonly autocomplete="off" spellcheck="false" />
+            <typo3-copy-to-clipboard
+                class="btn btn-default"
+                title="{f:translate(key: 'LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.created.copy')}"
+                text="{createdKey.secret}"
+            >
+                <core:icon identifier="actions-clipboard" size="small" />
+            </typo3-copy-to-clipboard>
+        </div>
+    </div>
+
+    <p><f:translate key="LLL:EXT:api_key/Resources/Private/Language/locallang_mod.xlf:module.created.usage" /></p>
+    <pre><code>curl -H "X-API-Key: {createdKey.secret}" https://example.com/api/…</code></pre>
+</f:section>
+
+</html>
