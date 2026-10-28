@@ -6,13 +6,12 @@ namespace MaikSchneider\ApiKey\Form\Element;
 
 use MaikSchneider\ApiKey\Key\Identity;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 /**
- * Selects whom a key is bound to and shows only the matching user field. The
- * identity is not stored: it follows from fe_user and be_user, and the
- * DataHandler hook clears the user field that does not match the submitted one.
+ * Selects whom a key is bound to; identity-select.css shows only the matching
+ * user field. The identity is not stored: it follows from fe_user and be_user,
+ * and the DataHandler hook clears the user field that does not match.
  */
 final class ApiKeyIdentityElement extends AbstractFormElement
 {
@@ -34,18 +33,13 @@ final class ApiKeyIdentityElement extends AbstractFormElement
                 . htmlspecialchars($this->getLanguageService()->sL(self::LLL . ':tx_apikey_key.identity.' . $identity->value))
                 . '</option>';
         }
-        // The user fields share the name pattern of this field, e.g. data[tx_apikey_key][12][fe_user]
-        $fields = [];
-        foreach ([Identity::FrontendUser, Identity::BackendUser] as $identity) {
-            $fields[$identity->value] = (string)preg_replace('/\[identity\]$/', '[' . $identity->value . ']', $itemName);
-        }
 
         $html = [];
         $html[] = $this->renderLabel($fieldId);
         $html[] = '<div class="formengine-field-item t3js-formengine-field-item">';
         $html[] = '<div class="form-control-wrap" style="max-width: ' . $this->formMaxWidth($this->defaultInputWidth) . 'px">';
         $html[] = '<select id="' . htmlspecialchars($fieldId) . '" name="' . htmlspecialchars($itemName) . '" class="form-select"'
-            . ' data-identity-fields="' . htmlspecialchars((string)json_encode($fields)) . '"'
+            . ' data-api-key-identity'
             . ' data-formengine-input-name="' . htmlspecialchars($itemName) . '">';
         $html[] = implode(LF, $options);
         $html[] = '</select>';
@@ -53,7 +47,7 @@ final class ApiKeyIdentityElement extends AbstractFormElement
         $html[] = '</div>';
 
         $resultArray['html'] = implode(LF, $html);
-        $resultArray['javaScriptModules'][] = JavaScriptModuleInstruction::create('@maikschneider/api-key/identity-select.js')->instance($fieldId);
+        $resultArray['stylesheetFiles'][] = 'EXT:api_key/Resources/Public/Css/identity-select.css';
 
         return $resultArray;
     }

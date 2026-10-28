@@ -1,0 +1,11 @@
+/* Shows only the user field that matches the selected identity of an API key. */
+/* Plain CSS keeps the hidden field from flashing up while the form loads, and */
+/* FormEngine's displayCond is no option: its reload saves the record. */
+fieldset:has([data-api-key-identity] option[value="fe_user"]:not(:checked)) .t3js-formengine-palette-field:has([name$="[fe_user]"]),
+fieldset:has([data-api-key-identity] option[value="be_user"]:not(:checked)) .t3js-formengine-palette-field:has([name$="[be_user]"]) {
+    display: none;
+}
+
+fieldset:has([data-api-key-identity]) .form-grid:has([name$="[fe_user]"]) {
+    --typo3-form-grid-columns: 1;
+}
