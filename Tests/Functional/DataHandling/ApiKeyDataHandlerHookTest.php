@@ -9,6 +9,7 @@ use MaikSchneider\ApiKey\Key\KeyHasher;
 use MaikSchneider\ApiKey\Key\OneTimeSecretStore;
 use MaikSchneider\ApiKey\Repository\ApiKeyRepository;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\DateTimeAspect;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -208,6 +209,32 @@ final class ApiKeyDataHandlerHookTest extends FunctionalTestCase
         self::assertNotNull($secret);
         self::assertNotSame($createdKey->secret, $secret);
         self::assertSame((new KeyHasher())->hash($secret), $copy['key_hash'] ?? null);
+    }
+
+    #[Test]
+    public function newRecordIsSavedWithoutABackendSession(): void
+    {
+        $backendUser = new BackendUserAuthentication();
+        $backendUser->user = $GLOBALS['BE_USER']->user;
+        $backendUser->workspace = 0;
+        $GLOBALS['BE_USER'] = $backendUser;
+
+        $dataHandler = $this->process(['NEW1' => ['pid' => 0, 'title' => 'CLI import']]);
+
+        self::assertSame([], $dataHandler->errorLog);
+        $uid = (int)$dataHandler->substNEWwithIDs['NEW1'];
+        self::assertNotSame('', $this->get(ApiKeyRepository::class)->findByUid($uid)['key_hash'] ?? '');
+    }
+
+    #[Test]
+    public function otherTablesAreLeftAlone(): void
+    {
+        $dataHandler = $this->get(DataHandler::class);
+        $dataHandler->start(['be_users' => [2 => ['realName' => 'Editor', 'key_hash' => 'kept']]], []);
+        $dataHandler->process_datamap();
+
+        self::assertSame([], $dataHandler->errorLog);
+        self::assertSame('Editor', $this->getConnectionPool()->getConnectionForTable('be_users')->select(['realName'], 'be_users', ['uid' => 2])->fetchOne());
     }
 
     /**

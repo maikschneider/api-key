@@ -95,6 +95,23 @@ final class ApiKeyModuleControllerTest extends FunctionalTestCase
         self::assertStringNotContainsString($createdKey->secret, $body);
     }
 
+    #[Test]
+    public function indexShowsTheStatusOfEachKey(): void
+    {
+        $repository = $this->get(ApiKeyRepository::class);
+        $active = $this->get(ApiKeyCreator::class)->create('Active');
+        $revoked = $this->get(ApiKeyCreator::class)->create('Revoked');
+        $repository->revoke($revoked->uid);
+        $expired = $this->get(ApiKeyCreator::class)->create('Expired', expiresAt: self::NOW + 60);
+        $this->get(Context::class)->setAspect('date', new DateTimeAspect(new \DateTimeImmutable('@' . (self::NOW + 60))));
+
+        $body = (string)$this->get(ApiKeyModuleController::class)->indexAction($this->request('_default'))->getBody();
+
+        foreach ([[$active, 'success'], [$revoked, 'danger'], [$expired, 'warning']] as [$createdKey, $badge]) {
+            self::assertMatchesRegularExpression('/' . preg_quote($createdKey->identifier, '/') . '(?:(?!badge-).)*badge-' . $badge . '/s', $body);
+        }
+    }
+
     /**
      * @param array<string, string>|null $body
      */

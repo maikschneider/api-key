@@ -113,6 +113,7 @@ final class ApiKeyCreatorTest extends FunctionalTestCase
         yield 'deleted fe user' => [['feUser' => 2], 1792512103];
         yield 'unknown be user' => [['beUser' => 99], 1792512104];
         yield 'deleted be user' => [['beUser' => 2], 1792512104];
+        yield 'negative creator' => [['createdBy' => -1], 1792512102];
         yield 'unknown creator' => [['createdBy' => 99], 1792512105];
         yield 'expiry now' => [['expiresAt' => self::NOW], 1792512106];
         yield 'expiry in the past' => [['expiresAt' => self::NOW - 1], 1792512106];
