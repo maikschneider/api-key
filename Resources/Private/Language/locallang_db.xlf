@@ -15,6 +15,21 @@
 			<trans-unit id="tx_apikey_key.key_prefix.description">
 				<source>The first characters of the key. Safe to show and log; the full key is only shown once at creation.</source>
 			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity">
+				<source>Bound to</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.description">
+				<source>A service key acts without a user. A key bound to a user stops working while that user is deleted or disabled.</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.service">
+				<source>Nobody (service key)</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.fe_user">
+				<source>Frontend user</source>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.be_user">
+				<source>Backend user</source>
+			</trans-unit>
 			<trans-unit id="tx_apikey_key.fe_user">
 				<source>Frontend user</source>
 			</trans-unit>
@@ -53,6 +68,21 @@
 			</trans-unit>
 			<trans-unit id="tx_apikey_key.palettes.identity">
 				<source>Identity</source>
+			</trans-unit>
+			<trans-unit id="secret.generatedOnSave">
+				<source>The key is generated when you save this record and shown once.</source>
+			</trans-unit>
+			<trans-unit id="secret.title">
+				<source>API key "%s" (%s) created</source>
+			</trans-unit>
+			<trans-unit id="secret.message">
+				<source>Copy the key now and store it somewhere safe. It is not shown again and cannot be recovered; only its hash is stored.</source>
+			</trans-unit>
+			<trans-unit id="secret.label">
+				<source>API key</source>
+			</trans-unit>
+			<trans-unit id="secret.copy">
+				<source>Copy API key</source>
 			</trans-unit>
 		</body>
 	</file>

@@ -1,0 +1,7 @@
+"fe_users"
+,"uid","pid","username","deleted"
+,1,0,"frontend",0
+"be_users"
+,"uid","pid","username","admin","deleted"
+,1,0,"admin",1,0
+,2,0,"editor",0,0

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:api_key/Resources/Private/Language/locallang_mod.xlf" date="2026-10-28T00:00:00Z" product-name="api_key">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab">
+				<source>API Keys</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel">
+				<source>Create and revoke API keys</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr">
+				<source>Create API keys for scripts, cron jobs and server-to-server integrations. The key is shown once after creation; only its hash is stored.</source>
+			</trans-unit>
+			<trans-unit id="module.new.title">
+				<source>Create API key</source>
+			</trans-unit>
+			<trans-unit id="module.empty.title">
+				<source>No API keys yet</source>
+			</trans-unit>
+			<trans-unit id="module.empty.message">
+				<source>Create a key here or with the console command apikey:create.</source>
+			</trans-unit>
+			<trans-unit id="module.column.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="module.column.identifier">
+				<source>Identifier</source>
+			</trans-unit>
+			<trans-unit id="module.column.identity">
+				<source>Identity</source>
+			</trans-unit>
+			<trans-unit id="module.column.scopes">
+				<source>Scopes</source>
+			</trans-unit>
+			<trans-unit id="module.column.expires">
+				<source>Expires</source>
+			</trans-unit>
+			<trans-unit id="module.column.lastUsed">
+				<source>Last used</source>
+			</trans-unit>
+			<trans-unit id="module.column.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="module.identity.service">
+				<source>Service key</source>
+			</trans-unit>
+			<trans-unit id="module.identity.fe_user">
+				<source>Frontend user</source>
+			</trans-unit>
+			<trans-unit id="module.identity.be_user">
+				<source>Backend user</source>
+			</trans-unit>
+			<trans-unit id="module.scopes.all">
+				<source>all</source>
+			</trans-unit>
+			<trans-unit id="module.never">
+				<source>never</source>
+			</trans-unit>
+			<trans-unit id="module.status.active">
+				<source>active</source>
+			</trans-unit>
+			<trans-unit id="module.status.expired">
+				<source>expired</source>
+			</trans-unit>
+			<trans-unit id="module.status.revoked">
+				<source>revoked</source>
+			</trans-unit>
+			<trans-unit id="module.edit">
+				<source>Edit</source>
+			</trans-unit>
+			<trans-unit id="module.revoke">
+				<source>Revoke</source>
+			</trans-unit>
+			<trans-unit id="module.revoke.confirm.title">
+				<source>Revoke API key?</source>
+			</trans-unit>
+			<trans-unit id="module.revoke.confirm.message">
+				<source>Requests with this key are rejected from now on. The record stays for auditing.</source>
+			</trans-unit>
+			<trans-unit id="module.revoke.success">
+				<source>Revoked API key "%s" (%s).</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

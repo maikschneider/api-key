@@ -9,4 +9,8 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:api_key/Resources/Public/Icons/Extension.svg',
     ],
+    'module-api-key' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:api_key/Resources/Public/Icons/Extension.svg',
+    ],
 ];

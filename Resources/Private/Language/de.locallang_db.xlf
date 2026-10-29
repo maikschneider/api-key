@@ -19,6 +19,26 @@
 				<source>The first characters of the key. Safe to show and log; the full key is only shown once at creation.</source>
 				<target>Die ersten Zeichen des Schlüssels. Dürfen angezeigt und geloggt werden; der vollständige Schlüssel wird nur einmal bei der Erstellung angezeigt.</target>
 			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity">
+				<source>Bound to</source>
+				<target>Gebunden an</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.description">
+				<source>A service key acts without a user. A key bound to a user stops working while that user is deleted or disabled.</source>
+				<target>Ein Service-Schlüssel handelt ohne Benutzer. Ein an einen Benutzer gebundener Schlüssel funktioniert nicht, solange dieser Benutzer gelöscht oder deaktiviert ist.</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.service">
+				<source>Nobody (service key)</source>
+				<target>Niemanden (Service-Schlüssel)</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.fe_user">
+				<source>Frontend user</source>
+				<target>Frontend-Benutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.identity.be_user">
+				<source>Backend user</source>
+				<target>Backend-Benutzer</target>
+			</trans-unit>
 			<trans-unit id="tx_apikey_key.fe_user">
 				<source>Frontend user</source>
 				<target>Frontend-Benutzer</target>
@@ -70,6 +90,26 @@
 			<trans-unit id="tx_apikey_key.palettes.identity">
 				<source>Identity</source>
 				<target>Identität</target>
+			</trans-unit>
+			<trans-unit id="secret.generatedOnSave">
+				<source>The key is generated when you save this record and shown once.</source>
+				<target>Der Schlüssel wird beim Speichern dieses Datensatzes erzeugt und einmal angezeigt.</target>
+			</trans-unit>
+			<trans-unit id="secret.title">
+				<source>API key "%s" (%s) created</source>
+				<target>API-Schlüssel "%s" (%s) erstellt</target>
+			</trans-unit>
+			<trans-unit id="secret.message">
+				<source>Copy the key now and store it somewhere safe. It is not shown again and cannot be recovered; only its hash is stored.</source>
+				<target>Den Schlüssel jetzt kopieren und sicher aufbewahren. Er wird nicht erneut angezeigt und kann nicht wiederhergestellt werden; gespeichert wird nur sein Hash.</target>
+			</trans-unit>
+			<trans-unit id="secret.label">
+				<source>API key</source>
+				<target>API-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="secret.copy">
+				<source>Copy API key</source>
+				<target>API-Schlüssel kopieren</target>
 			</trans-unit>
 		</body>
 	</file>
