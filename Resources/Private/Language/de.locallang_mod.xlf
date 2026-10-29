@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:api_key/Resources/Private/Language/locallang_mod.xlf" date="2026-10-29T00:00:00Z" product-name="api_key">
+		<header/>
+		<body>
+			<trans-unit id="mlang_tabs_tab">
+				<source>API Keys</source>
+				<target>API-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel">
+				<source>Create and revoke API keys</source>
+				<target>API-Schlüssel erstellen und widerrufen</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr">
+				<source>Create API keys for scripts, cron jobs and server-to-server integrations. The key is shown once after creation; only its hash is stored.</source>
+				<target>API-Schlüssel für Skripte, Cronjobs und Server-zu-Server-Integrationen erstellen. Der Schlüssel wird nach der Erstellung einmal angezeigt; gespeichert wird nur sein Hash.</target>
+			</trans-unit>
+			<trans-unit id="module.new.title">
+				<source>Create API key</source>
+				<target>API-Schlüssel erstellen</target>
+			</trans-unit>
+			<trans-unit id="module.empty.title">
+				<source>No API keys yet</source>
+				<target>Noch keine API-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="module.empty.message">
+				<source>Create a key here or with the console command apikey:create.</source>
+				<target>Einen Schlüssel hier oder mit dem Konsolenbefehl apikey:create erstellen.</target>
+			</trans-unit>
+			<trans-unit id="module.column.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="module.column.identifier">
+				<source>Identifier</source>
+				<target>Kennung</target>
+			</trans-unit>
+			<trans-unit id="module.column.identity">
+				<source>Identity</source>
+				<target>Identität</target>
+			</trans-unit>
+			<trans-unit id="module.column.scopes">
+				<source>Scopes</source>
+				<target>Scopes</target>
+			</trans-unit>
+			<trans-unit id="module.column.expires">
+				<source>Expires</source>
+				<target>Läuft ab</target>
+			</trans-unit>
+			<trans-unit id="module.column.lastUsed">
+				<source>Last used</source>
+				<target>Zuletzt verwendet</target>
+			</trans-unit>
+			<trans-unit id="module.column.status">
+				<source>Status</source>
+				<target>Status</target>
+			</trans-unit>
+			<trans-unit id="module.identity.service">
+				<source>Service key</source>
+				<target>Service-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="module.identity.fe_user">
+				<source>Frontend user</source>
+				<target>Frontend-Benutzer</target>
+			</trans-unit>
+			<trans-unit id="module.identity.be_user">
+				<source>Backend user</source>
+				<target>Backend-Benutzer</target>
+			</trans-unit>
+			<trans-unit id="module.scopes.all">
+				<source>all</source>
+				<target>alle</target>
+			</trans-unit>
+			<trans-unit id="module.never">
+				<source>never</source>
+				<target>nie</target>
+			</trans-unit>
+			<trans-unit id="module.status.active">
+				<source>active</source>
+				<target>aktiv</target>
+			</trans-unit>
+			<trans-unit id="module.status.expired">
+				<source>expired</source>
+				<target>abgelaufen</target>
+			</trans-unit>
+			<trans-unit id="module.status.revoked">
+				<source>revoked</source>
+				<target>widerrufen</target>
+			</trans-unit>
+			<trans-unit id="module.edit">
+				<source>Edit</source>
+				<target>Bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="module.revoke">
+				<source>Revoke</source>
+				<target>Widerrufen</target>
+			</trans-unit>
+			<trans-unit id="module.revoke.confirm.title">
+				<source>Revoke API key?</source>
+				<target>API-Schlüssel widerrufen?</target>
+			</trans-unit>
+			<trans-unit id="module.revoke.confirm.message">
+				<source>Requests with this key are rejected from now on. The record stays for auditing.</source>
+				<target>Anfragen mit diesem Schlüssel werden ab sofort abgewiesen. Der Datensatz bleibt für die Nachvollziehbarkeit erhalten.</target>
+			</trans-unit>
+			<trans-unit id="module.revoke.success">
+				<source>Revoked API key "%s" (%s).</source>
+				<target>API-Schlüssel "%s" (%s) widerrufen.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
