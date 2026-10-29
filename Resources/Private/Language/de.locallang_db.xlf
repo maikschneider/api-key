@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:api_key/Resources/Private/Language/locallang_db.xlf" date="2026-10-29T00:00:00Z" product-name="api_key">
+		<header/>
+		<body>
+			<trans-unit id="tx_apikey_key">
+				<source>API key</source>
+				<target>API-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.key_prefix">
+				<source>Identifier</source>
+				<target>Kennung</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.key_prefix.description">
+				<source>The first characters of the key. Safe to show and log; the full key is only shown once at creation.</source>
+				<target>Die ersten Zeichen des Schlüssels. Dürfen angezeigt und geloggt werden; der vollständige Schlüssel wird nur einmal bei der Erstellung angezeigt.</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.fe_user">
+				<source>Frontend user</source>
+				<target>Frontend-Benutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.be_user">
+				<source>Backend user</source>
+				<target>Backend-Benutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.created_by">
+				<source>Created by</source>
+				<target>Erstellt von</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.scopes">
+				<source>Scopes</source>
+				<target>Scopes</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.scopes.description">
+				<source>One scope per line. Leave empty to allow everything.</source>
+				<target>Ein Scope pro Zeile. Leer lassen, um alles zu erlauben.</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.expires_at">
+				<source>Expires at</source>
+				<target>Läuft ab am</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.last_used_at">
+				<source>Last used at</source>
+				<target>Zuletzt verwendet am</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.allowed_ips">
+				<source>Allowed IP addresses</source>
+				<target>Erlaubte IP-Adressen</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.allowed_ips.description">
+				<source>One IP address or CIDR range per line. Leave empty to allow any address.</source>
+				<target>Eine IP-Adresse oder ein CIDR-Bereich pro Zeile. Leer lassen, um jede Adresse zu erlauben.</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.sites">
+				<source>Sites</source>
+				<target>Sites</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.sites.description">
+				<source>One site identifier per line. Leave empty to allow every site.</source>
+				<target>Ein Site-Identifier pro Zeile. Leer lassen, um jede Site zu erlauben.</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.tabs.restrictions">
+				<source>Restrictions</source>
+				<target>Einschränkungen</target>
+			</trans-unit>
+			<trans-unit id="tx_apikey_key.palettes.identity">
+				<source>Identity</source>
+				<target>Identität</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
