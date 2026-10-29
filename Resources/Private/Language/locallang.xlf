@@ -6,6 +6,9 @@
 			<trans-unit id="extension.title">
 				<source>API Key</source>
 			</trans-unit>
+			<trans-unit id="settings.rejectInvalidKeys">
+				<source>Reject invalid keys: Answer requests that carry an invalid, revoked or expired API key with 401 right away. When off, the result is only attached to the request as attribute "api_key" and the consuming API decides.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:api_key/Resources/Private/Language/locallang.xlf" date="2026-10-29T00:00:00Z" product-name="api_key">
+		<header/>
+		<body>
+			<trans-unit id="extension.title">
+				<source>API Key</source>
+				<target>API-Schlüssel</target>
+			</trans-unit>
+			<trans-unit id="settings.rejectInvalidKeys">
+				<source>Reject invalid keys: Answer requests that carry an invalid, revoked or expired API key with 401 right away. When off, the result is only attached to the request as attribute "api_key" and the consuming API decides.</source>
+				<target>Ungültige Schlüssel abweisen: Anfragen mit einem ungültigen, widerrufenen oder abgelaufenen API-Schlüssel sofort mit 401 beantworten. Ist die Option aus, wird das Ergebnis nur als Attribut "api_key" an die Anfrage gehängt und die verarbeitende API entscheidet.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
